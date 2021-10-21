@@ -20,6 +20,26 @@ public class World {
         System.out.print("Stop\n");
     }
 
+    class Vector2d {
+
+        final public int x;
+        final public int y;
+
+        public Vector2d (int x, int y) {
+            this.x=x;
+            this.y=y;
+        }
+
+        public boolean precedes(Vector2d other) {
+            return this.x <= other.x && this.y <= other.x;
+        }
+        
+
+    }
+
+
+
+
     public static void run(Direction[] args) {
         for(int i = 0; i < args.length;i++) {
 
