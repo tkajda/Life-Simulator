@@ -15,12 +15,20 @@ public class World {
         }
         System.out.println(args[args.length-1]);
 
+
+        Vector2d position1 = new Vector2d(1,2);
+        System.out.println(position1);
+        Vector2d position2 = new Vector2d(-2,1);
+        System.out.println(position2);
+        System.out.println(position1.add(position2));
+
+
         Direction[] arr = change(args);
         run(arr);
         System.out.print("Stop\n");
     }
 
-    class Vector2d {
+    static class Vector2d {
 
         final public int x;
         final public int y;
@@ -31,9 +39,43 @@ public class World {
         }
 
         public boolean precedes(Vector2d other) {
-            return this.x <= other.x && this.y <= other.x;
+            return this.x <= other.x && this.y <= other.y;
         }
-        
+
+        public boolean follows(Vector2d other) {
+            return this.x >= other.x && this.y >= other.y;
+        }
+
+        public Vector2d upperRight(Vector2d other) {
+            return new Vector2d(Math.max(this.x, other.x), Math.max(this.x, other.x));
+        }
+
+        public Vector2d lowerLeft(Vector2d other) {
+            return new Vector2d(Math.min(this.x, other.x), Math.min(this.y, other.y));
+        }
+
+        public Vector2d add(Vector2d other) {
+            return new Vector2d(this.x+other.x,this.y+other.y);
+        }
+
+        public Vector2d substract(Vector2d other) {
+            return new Vector2d(this.x-other.x,this.y-other.y);
+        }
+
+        public boolean equals(Object other) {
+            if (this == other)
+                return true;
+            if (!(other instanceof Vector2d))
+                return false;
+            Vector2d that = (Vector2d) other;
+            return that.x==this.x && that.y==this.y;
+        }
+
+        public Vector2d opposite() {
+            return new Vector2d(-this.x, -this.y);
+        }
+
+
 
     }
 
