@@ -17,13 +17,10 @@ public class World {
 
 
         Vector2d position1 = new Vector2d(1,2);
-        System.out.println(position1.x);
-        System.out.println(position1.y);
+        System.out.println(position1);
         Vector2d position2 = new Vector2d(-2,1);
         System.out.println(position2);
-        position1.add(position2);
-        System.out.println(position1.x);
-        System.out.println(position1.y);
+        System.out.println(position1.add(position2));
 
         Direction[] arr = change(args);
         run(arr);
@@ -40,27 +37,27 @@ public class World {
             this.y=y;
         }
 
-        public boolean precedes(Vector2d other) {
+        boolean precedes(Vector2d other) {
             return this.x <= other.x && this.y <= other.y;
         }
 
-        public boolean follows(Vector2d other) {
+        boolean follows(Vector2d other) {
             return this.x >= other.x && this.y >= other.y;
         }
 
-        public Vector2d upperRight(Vector2d other) {
+        Vector2d upperRight(Vector2d other) {
             return new Vector2d(Math.max(this.x, other.x), Math.max(this.x, other.x));
         }
 
-        public Vector2d lowerLeft(Vector2d other) {
+        Vector2d lowerLeft(Vector2d other) {
             return new Vector2d(Math.min(this.x, other.x), Math.min(this.y, other.y));
         }
-        //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-        public Vector2d add(Vector2d other) {
+
+        Vector2d add(Vector2d other) {
             return new Vector2d(this.x+other.x,this.y+other.y);
         }
 
-        public Vector2d substract(Vector2d other) {
+        Vector2d substract(Vector2d other) {
             return new Vector2d(this.x-other.x,this.y-other.y);
         }
 
@@ -73,11 +70,9 @@ public class World {
             return that.x==this.x && that.y==this.y;
         }
 
-        public Vector2d opposite() {
+        Vector2d opposite() {
             return new Vector2d(-this.x, -this.y);
         }
-
-
 
     }
 
