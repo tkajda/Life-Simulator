@@ -17,11 +17,13 @@ public class World {
 
 
         Vector2d position1 = new Vector2d(1,2);
-        System.out.println(position1.x + position1.y);
+        System.out.println(position1.x);
+        System.out.println(position1.y);
         Vector2d position2 = new Vector2d(-2,1);
         System.out.println(position2);
-        System.out.println(position1.add(position2));
-
+        position1.add(position2);
+        System.out.println(position1.x);
+        System.out.println(position1.y);
 
         Direction[] arr = change(args);
         run(arr);
@@ -53,7 +55,7 @@ public class World {
         public Vector2d lowerLeft(Vector2d other) {
             return new Vector2d(Math.min(this.x, other.x), Math.min(this.y, other.y));
         }
-
+        //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         public Vector2d add(Vector2d other) {
             return new Vector2d(this.x+other.x,this.y+other.y);
         }
