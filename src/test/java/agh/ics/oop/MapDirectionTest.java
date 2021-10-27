@@ -3,7 +3,7 @@ package agh.ics.oop;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
-class MapDirectionTest {
+public class MapDirectionTest {
 
     @Test
     void nextTest() {
@@ -14,10 +14,10 @@ class MapDirectionTest {
     }
     @Test
     void previous() {
-        assertEquals(MapDirection.WEST, MapDirection.NORTH.previous());
-        assertEquals(MapDirection.SOUTH, MapDirection.WEST.previous());
-        assertEquals(MapDirection.EAST, MapDirection.SOUTH.previous());
         assertEquals(MapDirection.NORTH, MapDirection.EAST.previous());
+        assertEquals(MapDirection.EAST, MapDirection.SOUTH.previous());
+        assertEquals(MapDirection.SOUTH, MapDirection.WEST.previous());
+        assertEquals(MapDirection.WEST, MapDirection.NORTH.previous());
     }
 
 }

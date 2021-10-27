@@ -9,27 +9,20 @@ public class Vector2d {
         this.x=x;
         this.y=y;
     }
+
     public String toString() { return "(" + x + "," + y + ')';}
 
-    boolean precedes(Vector2d other) {
-        return this.x <= other.x && this.y <= other.y;
-    }
+    boolean precedes(Vector2d other) {return this.x <= other.x && this.y <= other.y;}
 
-    boolean follows(Vector2d other) {
-        return this.x >= other.x && this.y >= other.y;
-    }
+    boolean follows(Vector2d other) {return this.x >= other.x && this.y >= other.y;}
 
     Vector2d upperRight(Vector2d other) {return new Vector2d(Math.max(this.x, other.x), Math.max(this.y, other.y));}
 
     Vector2d lowerLeft(Vector2d other) { return new Vector2d(Math.min(this.x, other.x), Math.min(this.y, other.y));}
 
-    Vector2d add(Vector2d other) {
-        return new Vector2d(this.x+other.x,this.y+other.y);
-    }
+    Vector2d add(Vector2d other) {return new Vector2d(this.x+other.x,this.y+other.y);}
 
-    Vector2d substract(Vector2d other) {
-        return new Vector2d(this.x-other.x,this.y-other.y);
-    }
+    Vector2d substract(Vector2d other) {return new Vector2d(this.x-other.x,this.y-other.y);}
 
     public boolean equals(Object other) {
         if (this == other)
