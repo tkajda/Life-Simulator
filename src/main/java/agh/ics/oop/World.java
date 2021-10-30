@@ -1,5 +1,8 @@
 package agh.ics.oop;
 
+
+
+
 public class World {
 
     public static void main(String[] args) {
@@ -12,17 +15,23 @@ public class World {
             }
             cnt++;
         }
+
         System.out.println(args[args.length-1]);
 
-
-        Vector2d position1 = new Vector2d(1,2);
-        System.out.println(position1);
-        Vector2d position2 = new Vector2d(-2,1);
-        System.out.println(position2);
-        System.out.println(position1.add(position2));
+        Animal a = new Animal();
+        System.out.println(a);
 
         Direction[] arr = change(args);
-        run(arr);
+        MoveDirection[] t = OptionParser.parse(args);
+
+        int i = 0;
+
+        for(MoveDirection dir: t) {
+            run(arr, i);
+            i++;
+            a.move(dir);
+        }
+        System.out.println(a);
         System.out.print("Stop\n");
     }
 
@@ -31,16 +40,14 @@ public class World {
 
 
 
-    public static void run(Direction[] args) {
-        for(int i = 0; i < args.length;i++) {
+    public static void run(Direction[] args, int i) {
 
-            if (args[i] != null) {
-                switch (args[i]) {
-                    case FORWARD -> System.out.println("Zwierzak idzie do przodu");
-                    case BACKWARD-> System.out.println("Zwierzak idzie do tyłu");
-                    case RIGHT -> System.out.println("Zwierzak skręca w prawo");
-                    case LEFT -> System.out.println("Zwierzak skręca w lewo");
-                }
+        if (args[i] != null) {
+            switch (args[i]) {
+                case FORWARD -> System.out.println("Zwierzak idzie do przodu");
+                case BACKWARD-> System.out.println("Zwierzak idzie do tyłu");
+                case RIGHT -> System.out.println("Zwierzak skręca w prawo");
+                case LEFT -> System.out.println("Zwierzak skręca w lewo");
             }
         }
     }

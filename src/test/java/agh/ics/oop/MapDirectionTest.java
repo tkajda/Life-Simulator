@@ -13,7 +13,7 @@ public class MapDirectionTest {
         assertEquals(MapDirection.WEST, MapDirection.SOUTH.next());
     }
     @Test
-    void previous() {
+    void previousTest() {
         assertEquals(MapDirection.NORTH, MapDirection.EAST.previous());
         assertEquals(MapDirection.EAST, MapDirection.SOUTH.previous());
         assertEquals(MapDirection.SOUTH, MapDirection.WEST.previous());

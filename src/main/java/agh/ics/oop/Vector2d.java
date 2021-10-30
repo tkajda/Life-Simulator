@@ -1,6 +1,6 @@
 package agh.ics.oop;
 
-public class Vector2d {
+class Vector2d {
 
     final public int x;
     final public int y;
@@ -32,6 +32,7 @@ public class Vector2d {
         Vector2d that = (Vector2d) other;
         return that.x==this.x && that.y==this.y;
     }
+
 
     Vector2d opposite() {return new Vector2d(-this.x, -this.y);}
 
