@@ -6,10 +6,11 @@ import org.junit.jupiter.api.Test;
 
 public class AnimalTest {
 
-    Animal abc = new Animal();
 
     @Test
     void orientationTest() {
+        Animal abc = new Animal();
+
 
         MoveDirection[][] moves = {
                 {MoveDirection.RIGHT,MoveDirection.RIGHT,MoveDirection.RIGHT,MoveDirection.RIGHT}, //test1
@@ -34,8 +35,11 @@ public class AnimalTest {
 
     @Test
     void isAtMapTest() {
+        Animal abc = new Animal();
 
-        MoveDirection[] moves = {MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.FORWARD};
+
+        MoveDirection[] moves = {MoveDirection.FORWARD,MoveDirection.FORWARD,
+                MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.FORWARD};
         for(int i=0; i<10; i++) {
             for(MoveDirection dir: moves) {
                 abc.move(dir);
@@ -50,6 +54,8 @@ public class AnimalTest {
 
     @Test
     void positionTest() {
+        Animal abc = new Animal();
+
 
         Vector2d[] vectors = {new Vector2d(3,1),
                                 new Vector2d(3,4),
@@ -75,6 +81,131 @@ public class AnimalTest {
         }
     }
 
+
+    @Test
+    void testMove() {
+        Animal a = new Animal();
+        assertEquals(new Vector2d(2, 2), a.getPos());
+        assertEquals(MapDirection.NORTH, a.getDirection());
+
+        MoveDirection[] moves = {MoveDirection.FORWARD,MoveDirection.RIGHT, MoveDirection.FORWARD, MoveDirection.RIGHT,
+                        MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.FORWARD,MoveDirection.RIGHT, MoveDirection.FORWARD,
+                        MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.RIGHT, MoveDirection.FORWARD,
+                        MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.LEFT,
+                        MoveDirection.FORWARD, MoveDirection.BACKWARD, MoveDirection.BACKWARD, MoveDirection.BACKWARD, MoveDirection.BACKWARD};
+
+        Vector2d[] positions = {new Vector2d(2, 3), new Vector2d(2, 3), new Vector2d(3, 3),
+                new Vector2d(3, 3), new Vector2d(3, 2), new Vector2d(3, 1),
+                new Vector2d(3, 0), new Vector2d(3, 0), new Vector2d(2, 0),
+                new Vector2d(1, 0), new Vector2d(0, 0), new Vector2d(0, 0),
+                new Vector2d(0, 0), new Vector2d(0, 1), new Vector2d(0, 1),
+                new Vector2d(0, 1), new Vector2d(0, 1), new Vector2d(0, 1),
+                new Vector2d(0, 1), new Vector2d(0, 0), new Vector2d(0, 1),
+                new Vector2d(0, 2), new Vector2d(0, 3), new Vector2d(0, 4)};
+
+        MapDirection[]  directions = { MapDirection.NORTH ,MapDirection.EAST ,MapDirection.EAST ,
+                MapDirection.SOUTH ,MapDirection.SOUTH ,MapDirection.SOUTH ,MapDirection.SOUTH ,
+                MapDirection.WEST ,MapDirection.WEST ,MapDirection.WEST ,MapDirection.WEST ,
+                MapDirection.WEST ,MapDirection.NORTH ,MapDirection.NORTH ,MapDirection.WEST ,
+                MapDirection.WEST , MapDirection.WEST ,MapDirection.WEST ,MapDirection.SOUTH ,
+                MapDirection.SOUTH , MapDirection.SOUTH , MapDirection.SOUTH ,MapDirection.SOUTH ,
+        };
+
+        int i = 0;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+              a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+        a.move(moves[i]);
+        assertEquals(positions[i], a.getPos());
+        assertEquals(directions[i], a.getDirection());
+        i++;
+    }
 }
 
 
