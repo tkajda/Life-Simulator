@@ -21,8 +21,8 @@ public class OptionParserTest {
                 MoveDirection.LEFT, MoveDirection.LEFT, MoveDirection.LEFT};
         MoveDirection[] output3 = {};
 
-        assertArrayEquals(output1, OptionParser.parse(input1));
-        assertArrayEquals(output2, OptionParser.parse(input2));
-        assertArrayEquals(output3, OptionParser.parse(input3));
+        assertArrayEquals(output1, OptionsParser.parse(input1));
+        assertArrayEquals(output2, OptionsParser.parse(input2));
+        assertArrayEquals(output3, OptionsParser.parse(input3));
     }
 }

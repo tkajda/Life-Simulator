@@ -1,21 +1,19 @@
 package agh.ics.oop;
 
 
-import javax.swing.*;
 import java.util.ArrayList;
 
 
-public class OptionParser {
+public class OptionsParser {
 
     public static MoveDirection[] parse(String[] args) {
         int len = 0;
-        ArrayList<String> tab = new ArrayList<>();
+        ArrayList<String> tab = new ArrayList<String>();
         for(String arg: args) {
             if (arg.equals("r") || arg.equals("b") || arg.equals("f") || arg.equals("l")) {
                 tab.add(arg);
                 len++;
             }}
-
 
         MoveDirection[] directions = new MoveDirection[len];
         int i = 0;

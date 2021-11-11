@@ -3,9 +3,24 @@ package agh.ics.oop;
 class Animal {
     private MapDirection orient = MapDirection.NORTH;
     private Vector2d v = new Vector2d(2,2);
+    private final IWorldMap map;
 
+    public Animal(IWorldMap map) {
+        this.map = map;
+    }
+
+    public Animal(IWorldMap map, Vector2d initialPosition) {
+        this.map = map;
+        this.v = initialPosition;
+
+    }
     public String toString() {
-        return v.toString() + ' ' + orient.toString();
+        return switch(this.orient) {
+            case NORTH -> " ^ ";
+            case SOUTH -> " v ";
+            case EAST -> " > ";
+            case WEST -> " < ";
+        };
     }
 
     boolean isAt(Vector2d position) {return getPos().equals(position);}
@@ -14,24 +29,23 @@ class Animal {
 
     public Vector2d getPos() {return v;}
 
-    public void move(MoveDirection direction) {
+    public void move(MoveDirection direction)  {
 
         switch (direction) {
             case RIGHT -> orient = orient.next();
             case LEFT -> orient = orient.previous();
-            case FORWARD -> {
-                Vector2d unitVector = orient.toUnitVector();
-                if ((v.x + unitVector.x <= 4) && (v.y + unitVector.y <= 4) && (v.y + unitVector.y >= 0) && v.x + unitVector.x>=0) {
-                    v = v.add(unitVector);
-                }
-            }
-            case BACKWARD -> {
-                Vector2d unitVector1 = orient.toUnitVector().opposite();
-                if ((v.x + unitVector1.x <= 4) && (v.y + unitVector1.y <= 4) && (v.y + unitVector1.y >= 0) && (v.x + unitVector1.x>=0)) {
-                    v = v.add(unitVector1);
-            }
         }
+
+        Vector2d newPos= new Vector2d(-1,-1);
+
+        switch(direction) {
+            case FORWARD -> newPos=this.v.add(this.orient.toUnitVector());
+            case BACKWARD -> newPos=this.v.add(this.orient.toUnitVector().opposite());
         }
+        if (map.canMoveTo(newPos)) {
+            this.v = newPos;
+        }
+
     }
 
 

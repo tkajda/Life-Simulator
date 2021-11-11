@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Test;
 
 
 public class AnimalTest {
-
+    RectangularMap map1 = new RectangularMap(5,5);
+    Animal abc = new Animal(map1,new Vector2d(2,2));
 
     @Test
     void orientationTest() {
-        Animal abc = new Animal();
 
+//        System.out.println(map1.getTopRight().x);
+//        System.out.println(map1.getTopRight().y);
 
         MoveDirection[][] moves = {
                 {MoveDirection.RIGHT,MoveDirection.RIGHT,MoveDirection.RIGHT,MoveDirection.RIGHT}, //test1
@@ -30,12 +32,13 @@ public class AnimalTest {
             i++;
 
         }
+
+
     }
 
 
     @Test
     void isAtMapTest() {
-        Animal abc = new Animal();
 
 
         MoveDirection[] moves = {MoveDirection.FORWARD,MoveDirection.FORWARD,
@@ -46,15 +49,14 @@ public class AnimalTest {
             }
             abc.move(MoveDirection.LEFT);
 
-            assertTrue(abc.getPos().x <= 4 && 0 <= abc.getPos().x &&
-                    abc.getPos().y <= 4 && 0 <= abc.getPos().y);
+            assertTrue(abc.getPos().x <= map1.getTopRight().x && 0 <= abc.getPos().x &&
+                    abc.getPos().y <= map1.getTopRight().y && 0 <= abc.getPos().y);
         }
     }
 
 
     @Test
     void positionTest() {
-        Animal abc = new Animal();
 
 
         Vector2d[] vectors = {new Vector2d(3,1),
@@ -84,7 +86,8 @@ public class AnimalTest {
 
     @Test
     void testMove() {
-        Animal a = new Animal();
+        Animal a = new Animal(new RectangularMap(5,5),new Vector2d(2,2));
+
         assertEquals(new Vector2d(2, 2), a.getPos());
         assertEquals(MapDirection.NORTH, a.getDirection());
 
@@ -204,7 +207,6 @@ public class AnimalTest {
         a.move(moves[i]);
         assertEquals(positions[i], a.getPos());
         assertEquals(directions[i], a.getDirection());
-        i++;
     }
 }
 
