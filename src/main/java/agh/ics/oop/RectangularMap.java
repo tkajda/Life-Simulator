@@ -19,13 +19,13 @@ class RectangularMap implements IWorldMap {
         }
     }
 
-    public Vector2d getTopRight() {
-        return topRight;
-    }
-
-    public Animal getAnimal(int i) {
-        return animals.get(i);
-    }
+//    public Vector2d getTopRight() {
+//        return topRight;
+//    }
+//
+//    public Animal getAnimal(int i) {
+//        return animals.get(i);
+//    }
 
 
     public String toString() {
