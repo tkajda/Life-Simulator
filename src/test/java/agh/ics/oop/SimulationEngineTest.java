@@ -1,6 +1,6 @@
 package agh.ics.oop;
 
-
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
@@ -18,10 +18,13 @@ public class SimulationEngineTest {
         IEngine engine3 = new SimulationEngine(directions3,map3, positions3);
         engine3.run();
 
-        assertEquals(map3.getAnimal(0).getPos(), new Vector2d(2,3));
-        assertEquals(map3.getAnimal(0).getDirection(), MapDirection.EAST);
-        assertEquals(map3.getAnimal(1).getPos(), new Vector2d(3,3));
-        assertEquals(map3.getAnimal(1).getDirection(), MapDirection.WEST);
+
+        List<Animal> tmp = ((RectangularMap) map3).getAnimals();
+
+        assertEquals(tmp.get(0).getPos(), new Vector2d(2,3));
+        assertEquals(tmp.get(0).getDirection(), MapDirection.EAST);
+        assertEquals(tmp.get(1).getPos(), new Vector2d(3,3));
+        assertEquals(tmp.get(1).getDirection(), MapDirection.WEST);
 
 
 

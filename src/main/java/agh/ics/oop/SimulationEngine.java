@@ -19,6 +19,7 @@ public class SimulationEngine implements IEngine {
             animals.add(animal);
             map.place(animal);
         }
+        map.putGrass()
     }
 
     @Override
