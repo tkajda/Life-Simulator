@@ -16,10 +16,10 @@ class Animal {
     }
     public String toString() {
         return switch(this.orient) {
-            case NORTH -> " ^ ";
-            case SOUTH -> " v ";
-            case EAST -> " > ";
-            case WEST -> " < ";
+            case NORTH -> "^";
+            case SOUTH -> "v";
+            case EAST -> ">";
+            case WEST -> "<";
         };
     }
 

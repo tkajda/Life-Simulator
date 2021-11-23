@@ -8,28 +8,40 @@ import java.util.Random;
 
 public class GrassField implements IWorldMap {
 
+    Vector2d startingPosition = new Vector2d(2,2);
     List<Grass> grassFields = new ArrayList<>();
-    Random generator = new Random();
-    private int num;
-    RectangularMap map = new RectangularMap(100, 100);
-    MapVisualizer visualizer = new MapVisualizer(map);
+    MapVisualizer visualizer = new MapVisualizer(this);
+    List<Animal> animals = new ArrayList<>();
 
-    public GrassField(int n) {
-        this.num = n;
+    public GrassField(int grassNum) {
+        Random generator = new Random();
+        int i = 0;
+        int a = (int) (Math.sqrt(10*grassNum));
+        while (i<grassNum) {
+            Vector2d pos = new Vector2d(generator.nextInt(a), generator.nextInt(a));
+            if (!isOccupied(pos)) {
+                grassFields.add(new Grass(pos));
+                i++;
+            }
+        }
     }
-    int a = (int) (Math.sqrt(10*num));
+
 
     public String toString() {
-        Vector2d bottomLeft= new Vector2d(99999, 99999);
-        Vector2d topRight = new Vector2d(-1,-1);
+        int inf = Integer.MAX_VALUE;
+        Vector2d bl=new Vector2d(inf,inf);
+        Vector2d tr=new Vector2d(-1,-1);
 
 
         for (Grass i: grassFields) {
-            Vector2d v = i.getPosition();
-
+            bl = bl.lowerLeft(i.getPosition());
+            tr = tr.upperRight(i.getPosition());
         }
-
-        return visualizer.draw(bottomLeft,topRight);
+        for(Animal j: animals) {
+            bl = bl.lowerLeft(j.getPos());
+            tr = tr.upperRight(j.getPos());
+        }
+        return visualizer.draw(bl,tr);
     }
 
 
@@ -40,11 +52,21 @@ public class GrassField implements IWorldMap {
 
     @Override
     public boolean place(Animal animal) {
-        return false;
+        if (!canMoveTo(animal.getPos())) {
+            return false;
+        }
+        animals.add(animal);
+        return true;
     }
+
 
     @Override
     public boolean isOccupied(Vector2d position) {
+        for (Animal j: animals) {
+            if (j.isAt(position)) {
+                return true;
+            }
+        }
         for (Grass i: grassFields) {
             if (i.getPosition().equals(position)) {
                 return true;
@@ -64,18 +86,4 @@ public class GrassField implements IWorldMap {
         }
         return null;
     }
-
-
-    public void putGrass() {
-        int i = 0;
-        while (i<=num) {
-            Vector2d v = new Vector2d(generator.nextInt(a),generator.nextInt(a));
-            if (!isOccupied(v)) {
-                grassFields.add(new Grass(v));
-                i++;
-            }
-        }
-    }
-
-
 }
