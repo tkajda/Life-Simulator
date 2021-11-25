@@ -7,41 +7,17 @@ public abstract class AbstractWorldMap implements IWorldMap {
 
 
     protected List<Animal> animals = new ArrayList<>();
-    private final MapVisualizer visualizer = new MapVisualizer(this);
     List<Grass> grassFields = new ArrayList<>();
+    private static final Vector2d MARGIN = new Vector2d(1,1);
 
+    abstract Vector2d[] getCorners();
 
-
-    protected Border getDrawingBorders() {
-
-        int inf = Integer.MAX_VALUE;
-        Vector2d bottomLeft = new Vector2d(inf,inf);
-        Vector2d topRight = new Vector2d(-inf,-inf);
-
-        for(Grass grass: grassFields) {
-            topRight.upperRight(grass.getPosition());
-            bottomLeft.lowerLeft(grass.getPosition());
-        }
-        Border border =new Border(bottomLeft, topRight);
-
-        for (Animal a : animals) {
-            border = border.expanses(a.getPos());
-        }
-
-        return new Border(
-                border.getBL(),
-                border.getTR()
-        );
-    }
-//    Vector2d v = new Vector2d(3,8);
-//    Vector2d u = new Vector2d(-1,-6);
-
-
-    @Override
     public String toString() {
-        Border borders = getDrawingBorders();
-        return visualizer.draw(borders.getBL(), borders.getTR());
+        MapVisualizer visualizer = new MapVisualizer(this);
+        Vector2d[] corners = this.getCorners();
+        return visualizer.draw(corners[0].substract(MARGIN), corners[1].add(MARGIN));
     }
+
 
     @Override
     public boolean place(Animal animal) {
@@ -64,7 +40,7 @@ public abstract class AbstractWorldMap implements IWorldMap {
 
     @Override
     public boolean isOccupied(Vector2d position) {
-        for (Animal i : animals) {
+        for (Animal i: animals) {
             if (i.getPos().equals(position)) {
                 return true;
             }
@@ -79,22 +55,13 @@ public abstract class AbstractWorldMap implements IWorldMap {
 
     @Override
     public Object objectAt(Vector2d position) {
-
-
         if (isOccupied(position)) {
-            for (Animal j: animals) {
-                if(j.getPos().equals(position)){
-                    return j;
-                }
-            }
-            for (Grass i : grassFields) {
-                if (i.getPosition().equals(position)) {
+            for (Animal i : animals) {
+                if (i.getPos().equals(position)) {
                     return i;
                 }
             }
-
         }
-
         return null;
     }
 
