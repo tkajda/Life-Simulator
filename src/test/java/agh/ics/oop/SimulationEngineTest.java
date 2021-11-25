@@ -9,24 +9,6 @@ public class SimulationEngineTest {
     @Test
     void runTest() {
 
-        //test 1
-        String[] args3 = "f b r l".split(" ");
-        MoveDirection[] directions3 = OptionsParser.parse(args3);
-
-        IWorldMap map3 = new RectangularMap(10,10);
-        Vector2d[] positions3 = {new Vector2d(2, 2), new Vector2d(3, 4)};
-        IEngine engine3 = new SimulationEngine(directions3,map3, positions3);
-        engine3.run();
-
-
-        List<Animal> tmp = ((RectangularMap) map3).getAnimals();
-
-        assertEquals(tmp.get(0).getPos(), new Vector2d(2,3));
-        assertEquals(tmp.get(0).getDirection(), MapDirection.EAST);
-        assertEquals(tmp.get(1).getPos(), new Vector2d(3,3));
-        assertEquals(tmp.get(1).getDirection(), MapDirection.WEST);
-
-
 
         //test 1 on map1
         String[] args = "f b r l f f r r f f f f f f f f".split(" ");
