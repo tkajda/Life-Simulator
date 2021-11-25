@@ -8,9 +8,19 @@ class GrassFieldTest {
     void testMovement() {
         IWorldMap map = new GrassField(10);
         Animal animal = new Animal(map, new Vector2d(2, 2));
+        // test grass <=> scan map before putting animal innit
+        int a = 10, cnt = 0;
+        for(int i=0; i<a; i++) {
+            for (int j=0; j<a; j++) {
+                Vector2d v = new Vector2d(i,j);
+                if (map.objectAt(v) instanceof Grass) {
+                    cnt++;
+                }
 
+            }
+        }
+        assertEquals(10, cnt);
         assertTrue(map.place(animal));
-
         assertTrue(map.isOccupied(new Vector2d(2, 2)));
         assertEquals(animal, map.objectAt(new Vector2d(2, 2)));
         assertFalse(map.canMoveTo(new Vector2d(2, 2)));
@@ -19,11 +29,17 @@ class GrassFieldTest {
         animal.move(MoveDirection.BACKWARD);
         animal.move(MoveDirection.BACKWARD);
 
-        System.out.println(animal.getPos());
         assertTrue(map.isOccupied(new Vector2d(2, 0)));
         assertEquals(animal, map.objectAt(new Vector2d(2, 0)));
         assertTrue(map.canMoveTo(new Vector2d(2, 2)));
         assertFalse(map.canMoveTo(new Vector2d(2, 0)));
+
+
+
+
+
+
+
     }
 
 }
