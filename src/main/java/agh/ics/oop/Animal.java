@@ -1,8 +1,7 @@
 package agh.ics.oop;
 
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 class Animal {
     private MapDirection orient = MapDirection.NORTH;
@@ -24,7 +23,7 @@ class Animal {
     }
 
     public void positionChanged(Vector2d oldPos, Vector2d newPos) {
-        for (IPositionChangeObserver observer : observers) {
+        for (IPositionChangeObserver observer: observers) {
             observer.positionChanged(oldPos, newPos);
         }
     }

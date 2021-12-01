@@ -38,6 +38,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         return animals.containsKey(position) || grassFields.containsKey(position);
     }
 
+
     @Override
     public Object objectAt(Vector2d position) {
 

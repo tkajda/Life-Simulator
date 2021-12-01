@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 public class SimulationEngineTest {
 
+
     @Test
     void runTest() {
 
@@ -18,8 +19,8 @@ public class SimulationEngineTest {
         IEngine engine = new SimulationEngine(directions, map, positions);
         engine.run();
 
-        assertFalse(map.isOccupied(new Vector2d(2,2)));
-        assertFalse(map.isOccupied(new Vector2d(3,4)));
+        assertFalse(map.objectAt(new Vector2d(2,2)) instanceof Animal);
+        assertFalse((map.objectAt(new Vector2d(3,4)) instanceof Animal));
         assertTrue(map.isOccupied(new Vector2d(2,7)));
         assertTrue(map.isOccupied(new Vector2d(-1,-5)));
 
@@ -32,8 +33,8 @@ public class SimulationEngineTest {
         IEngine engine1 = new SimulationEngine(directions1,map1,positions1);
         engine1.run();
 
-        assertFalse(map1.isOccupied(new Vector2d(2,2)));
-        assertFalse(map1.isOccupied(new Vector2d(3,4)));
+        assertFalse(map.objectAt(new Vector2d(2,2)) instanceof Animal);
+        assertFalse(map.objectAt(new Vector2d(3,4)) instanceof Animal);
         assertTrue(map1.isOccupied(new Vector2d(-1,1)));
         assertTrue(map1.isOccupied(new Vector2d(2,1)));
 
@@ -53,10 +54,10 @@ public class SimulationEngineTest {
         assertTrue(map1.isOccupied(new Vector2d(2,1)));
         assertTrue(map1.isOccupied(new Vector2d(0,-2)));
 
-        assertFalse(map1.isOccupied(new Vector2d(0,0)));
-        assertFalse(map1.isOccupied(new Vector2d(2,2)));
-        assertFalse(map1.isOccupied(new Vector2d(3,4)));
-        assertFalse(map1.isOccupied(new Vector2d(8,4)));
+        assertFalse(map.objectAt(new Vector2d(0,0)) instanceof Animal);
+        assertFalse(map.objectAt(new Vector2d(2,2)) instanceof Animal);
+        assertFalse(map.objectAt(new Vector2d(3,4)) instanceof Animal);
+        assertFalse(map.objectAt(new Vector2d(8,4)) instanceof Animal);
 
     }
 
