@@ -1,13 +1,34 @@
 package agh.ics.oop;
 
+
+import java.util.HashSet;
+import java.util.Set;
+
 class Animal {
     private MapDirection orient = MapDirection.NORTH;
     private Vector2d v = new Vector2d(2,2);
     private final IWorldMap map;
+    private final Set<IPositionChangeObserver> observers = new HashSet<>();
 
     public Animal(IWorldMap map) {
         this.map = map;
     }
+
+
+    public void addObserver(IPositionChangeObserver observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(IPositionChangeObserver observer) {
+        observers.remove(observer);
+    }
+
+    public void positionChanged(Vector2d oldPos, Vector2d newPos) {
+        for (IPositionChangeObserver observer : observers) {
+            observer.positionChanged(oldPos, newPos);
+        }
+    }
+
 
     public Animal(IWorldMap map, Vector2d initialPosition) {
         this.map = map;
@@ -43,6 +64,7 @@ class Animal {
             case BACKWARD -> newPos=this.v.add(this.orient.toUnitVector().opposite());
         }
         if (map.canMoveTo(newPos)) {
+            positionChanged(this.v, newPos);
             this.v = newPos;
         }
 

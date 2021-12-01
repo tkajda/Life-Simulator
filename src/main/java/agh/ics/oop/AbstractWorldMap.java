@@ -1,13 +1,12 @@
 package agh.ics.oop;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public abstract class AbstractWorldMap implements IWorldMap {
+public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver {
 
 
-    protected List<Animal> animals = new ArrayList<>();
-    List<Grass> grassFields = new ArrayList<>();
+    protected Map<Vector2d, Animal> animals = new HashMap<>();
+    protected Map<Vector2d, Grass> grassFields = new HashMap<>();
     private static final Vector2d MARGIN = new Vector2d(1,1);
 
     abstract Vector2d[] getCorners();
@@ -24,45 +23,38 @@ public abstract class AbstractWorldMap implements IWorldMap {
         if (!canMoveTo(animal.getPos())) {
             return false;
         }
-        animals.add(animal);
+        animals.put(animal.getPos(), animal);
+        animal.addObserver(this);
         return true;
     }
 
     @Override
     public boolean canMoveTo(Vector2d position) {
-        for (Animal i: animals) {
-            if (i.getPos().equals(position)) {
-                return false;
-            }
-        }
-        return true;
+        return !animals.containsKey(position);
     }
 
     @Override
     public boolean isOccupied(Vector2d position) {
-        for (Animal i: animals) {
-            if (i.getPos().equals(position)) {
-                return true;
-            }
-        }
-        for (Grass j: grassFields) {
-            if(j.getPosition().equals(position)) {
-                return true;
-            }
-        }
-        return false;
+        return animals.containsKey(position) || grassFields.containsKey(position);
     }
 
     @Override
     public Object objectAt(Vector2d position) {
+
         if (isOccupied(position)) {
-            for (Animal i : animals) {
-                if (i.getPos().equals(position)) {
-                    return i;
-                }
+            if (animals.get(position) != null){
+                return animals.get(position);
             }
+            return grassFields.get(position);
         }
         return null;
     }
+
+    @Override
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        Animal a = animals.remove(oldPosition);
+        animals.put(newPosition, a);
+    }
+
 
 }

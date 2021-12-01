@@ -28,4 +28,5 @@ class RectangularMap extends AbstractWorldMap {
     }
 
 
+
 }

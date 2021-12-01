@@ -34,12 +34,6 @@ class GrassFieldTest {
         assertTrue(map.canMoveTo(new Vector2d(2, 2)));
         assertFalse(map.canMoveTo(new Vector2d(2, 0)));
 
-
-
-
-
-
-
     }
 
 }
