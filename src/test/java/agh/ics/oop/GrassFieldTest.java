@@ -8,6 +8,7 @@ class GrassFieldTest {
     void testMovement() {
         IWorldMap map = new GrassField(10);
         Animal animal = new Animal(map, new Vector2d(2, 2));
+        Animal animal1 = new Animal(map, new Vector2d(2, 2));
         // test grass <=> scan map before putting animal innit
         int a = 10, cnt = 0;
         for(int i=0; i<a; i++) {
@@ -25,6 +26,11 @@ class GrassFieldTest {
         assertEquals(animal, map.objectAt(new Vector2d(2, 2)));
         assertFalse(map.canMoveTo(new Vector2d(2, 2)));
         assertTrue(map.canMoveTo(new Vector2d(2, 3)));
+
+
+        assertThrows(IllegalArgumentException.class, () ->
+                                            map.place(animal1));
+
 
         animal.move(MoveDirection.BACKWARD);
         animal.move(MoveDirection.BACKWARD);

@@ -28,7 +28,7 @@ public class OptionParserTest {
         List<MoveDirection> output2 = new ArrayList<>(Arrays.asList(output22));
         List<MoveDirection> output3 = new ArrayList<>(Arrays.asList(output33));
 
-//        assertFalse(output1, OptionsParser.parse(input1));
+        assertThrows(IllegalArgumentException.class, () -> OptionsParser.parse(input1));
         assertEquals(output2, OptionsParser.parse(input2));
         assertEquals(output3, OptionsParser.parse(input3));
     }

@@ -15,10 +15,16 @@ public class GrassField extends AbstractWorldMap {
         while (i < grassNum) {
             Vector2d pos = new Vector2d(generator.nextInt(a), generator.nextInt(a));
             if (!super.isOccupied(pos)) {
-                grassFields.put(pos, new Grass(pos));
+                Grass ngrass = new Grass(pos);
+                System.out.println("new grass pos: " + ngrass.getPosition());
+
+                grassFields.put(pos, ngrass);
+                boundedMap.addToMap(ngrass, ngrass.getPosition());
                 i++;
             }
         }
+
+
     }
 
 
