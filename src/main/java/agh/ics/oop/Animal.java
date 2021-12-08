@@ -3,7 +3,7 @@ package agh.ics.oop;
 
 import java.util.*;
 
-class Animal {
+class Animal  {
     private MapDirection orient = MapDirection.NORTH;
     private Vector2d v = new Vector2d(2,2);
     private final IWorldMap map;
@@ -43,11 +43,11 @@ class Animal {
         };
     }
 
-    boolean isAt(Vector2d position) {return getPos().equals(position);}
+    boolean isAt(Vector2d position) {return getPosition().equals(position);}
 
     public MapDirection getDirection() {return orient;}
 
-    public Vector2d getPos() {return v;}
+    public Vector2d getPosition() {return v;}
 
     public void move(MoveDirection direction)  {
 

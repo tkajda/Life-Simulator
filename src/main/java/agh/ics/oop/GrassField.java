@@ -12,11 +12,19 @@ public class GrassField extends AbstractWorldMap {
         int i = 0;
         int a = (int) (Math.sqrt(10 * grassNum));
 
+//        Grass grass22 = new Grass(new Vector2d(2,2));
+//        grassFields.put(grass22.getPosition(), grass22);
+//        boundedMap.addToMap(grass22, grass22.getPosition());
+//
+//
+//        Grass grass34 = new Grass(new Vector2d(3,4));
+//        grassFields.put(grass34.getPosition(), grass34);
+//        boundedMap.addToMap(grass34, grass34.getPosition());
+
         while (i < grassNum) {
             Vector2d pos = new Vector2d(generator.nextInt(a), generator.nextInt(a));
             if (!super.isOccupied(pos)) {
                 Grass ngrass = new Grass(pos);
-                System.out.println("new grass pos: " + ngrass.getPosition());
 
                 grassFields.put(pos, ngrass);
                 boundedMap.addToMap(ngrass, ngrass.getPosition());
@@ -45,8 +53,8 @@ public class GrassField extends AbstractWorldMap {
             bottomLeft = bottomLeft.lowerLeft(grass.getPosition());
         }
         for (Animal a : animals.values()) {
-            topRight = topRight.upperRight(a.getPos());
-            bottomLeft = bottomLeft.lowerLeft(a.getPos());
+            topRight = topRight.upperRight(a.getPosition());
+            bottomLeft = bottomLeft.lowerLeft(a.getPosition());
         }
 
         return new Vector2d[]{bottomLeft, topRight};
