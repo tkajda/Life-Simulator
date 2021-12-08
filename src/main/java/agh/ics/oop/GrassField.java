@@ -35,18 +35,10 @@ public class GrassField extends AbstractWorldMap {
 
     }
 
-    Vector2d getBoundedMapTR() {
-        return boundedMap.getTopRight();
-    }
-
-    Vector2d getBoundedMapBL() {
-        return boundedMap.getTopRight();
-    }
 
     public String toString() {
         return super.toString();
     }
-
 
 
     public Object objectAt(Vector2d position) {
