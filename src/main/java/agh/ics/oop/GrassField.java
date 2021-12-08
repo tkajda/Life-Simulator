@@ -27,7 +27,7 @@ public class GrassField extends AbstractWorldMap {
                 Grass ngrass = new Grass(pos);
 
                 grassFields.put(pos, ngrass);
-                boundedMap.addToMap(ngrass, ngrass.getPosition());
+                boundedMap.addToMap( ngrass.getPosition(), ngrass);
                 i++;
             }
         }
@@ -35,30 +35,19 @@ public class GrassField extends AbstractWorldMap {
 
     }
 
+    Vector2d getBoundedMapTR() {
+        return boundedMap.getTopRight();
+    }
 
+    Vector2d getBoundedMapBL() {
+        return boundedMap.getTopRight();
+    }
 
     public String toString() {
         return super.toString();
     }
 
 
-    @Override
-    public Vector2d[] getCorners() {
-        int inf = Integer.MAX_VALUE;
-        Vector2d bottomLeft = new Vector2d(inf, inf);
-        Vector2d topRight = new Vector2d(-inf, -inf);
-
-        for (Grass grass : grassFields.values()) {
-            topRight = topRight.upperRight(grass.getPosition());
-            bottomLeft = bottomLeft.lowerLeft(grass.getPosition());
-        }
-        for (Animal a : animals.values()) {
-            topRight = topRight.upperRight(a.getPosition());
-            bottomLeft = bottomLeft.lowerLeft(a.getPosition());
-        }
-
-        return new Vector2d[]{bottomLeft, topRight};
-    }
 
     public Object objectAt(Vector2d position) {
         if (isOccupied(position)) {

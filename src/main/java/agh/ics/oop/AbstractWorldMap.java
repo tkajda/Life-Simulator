@@ -5,18 +5,17 @@ import java.util.*;
 public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver {
 
 
+    public static MapBoundary boundedMap= new MapBoundary();
     protected Map<Vector2d, Animal> animals = new HashMap<>();
     protected Map<Vector2d, Grass> grassFields = new HashMap<>();
-    protected MapBoundary boundedMap = new MapBoundary();
 
     private static final Vector2d MARGIN = new Vector2d(1,1);
 
-    abstract Vector2d[] getCorners();
+
 
     public String toString() {
         MapVisualizer visualizer = new MapVisualizer(this);
-        Vector2d[] corners = this.getCorners();
-        return visualizer.draw(corners[0].substract(MARGIN), corners[1].add(MARGIN));
+        return visualizer.draw(boundedMap.getBottomLeft().substract(MARGIN), boundedMap.getTopRight().add(MARGIN));
     }
 
 
@@ -29,8 +28,9 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
             }
         }
         animals.put(animal.getPosition(), animal);
-        boundedMap.addToMap(animal, animal.getPosition());
+        boundedMap.addToMap( animal.getPosition(), animal);
         animal.addObserver(this);
+        animal.addObserver(boundedMap);
         return true;
     }
 

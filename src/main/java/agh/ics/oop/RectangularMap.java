@@ -14,18 +14,12 @@ class RectangularMap extends AbstractWorldMap {
         topRight = new Vector2d(width - 1, height - 1);
     }
 
+
     @Override
     public String toString() {
         return super.toString();
     }
 
-
-    @Override
-    public Vector2d[] getCorners() {
-        return new Vector2d[]{
-                bottomLeft,
-                topRight};
-    }
 
 
 
