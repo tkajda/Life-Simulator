@@ -6,13 +6,14 @@ import java.util.*;
 
 public class MapBoundary implements IPositionChangeObserver {
 
-    SortedSet<Pair<Vector2d, Object>> objectsX;
+    SortedSet<Pair<Vector2d, Object>> objectsX = new TreeSet();
     SortedSet<Pair<Vector2d, Object>> objectsY;
 
     public void addToMap(Object o, Vector2d position) {
         Pair <Vector2d, Object> para = new Pair<>(position, o);
         System.out.println(para);
-        //objectsX.add(para);
+        System.out.println(objectsX);
+        objectsX.add(para);
 //        objectsY.add(para);
 //        System.out.println("y" + objectsY);
 //        System.out.println("x" + objectsX);
