@@ -9,8 +9,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     protected Map<Vector2d, Animal> animals = new HashMap<>();
     protected Map<Vector2d, Grass> grassFields = new HashMap<>();
     private static final Vector2d MARGIN = new Vector2d(1,1);
-    private Vector2d bottomLeft;
-    private Vector2d topRight;
+
 
     public Vector2d getBottomLeft() {
         return boundedMap.getBottomLeft();

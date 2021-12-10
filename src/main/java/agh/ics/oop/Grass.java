@@ -2,7 +2,7 @@ package agh.ics.oop;
 
 
 
-public class Grass {
+public class Grass implements IMapElement {
 
     private final Vector2d v;
 
@@ -14,6 +14,15 @@ public class Grass {
     }
     public String toString() {
         return "*";
+    }
+
+    @Override
+    public String imageAddress() {
+        return "src/main/resources/grass.png";
+    }
+    @Override
+    public String getName() {
+        return "Trawa";
     }
 
 }
