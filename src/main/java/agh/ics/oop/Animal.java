@@ -51,7 +51,7 @@ class Animal  implements IMapElement{
     @Override
     public String imageAddress() {
         String x=
-        switch(this.orient) {
+        switch(this.getDirection()) {
             case NORTH -> "up";
             case SOUTH -> "down";
             case EAST -> "right";
@@ -70,17 +70,16 @@ class Animal  implements IMapElement{
     public void move(MoveDirection direction)  {
 
         switch (direction) {
-            case RIGHT -> orient = orient.next();
-            case LEFT -> orient = orient.previous();
+            case RIGHT -> this.orient = orient.next();
+            case LEFT -> this.orient = orient.previous();
         }
-
-        Vector2d newPos= new Vector2d(-1,-1);
+        Vector2d newPos = this.getPosition();
 
         switch(direction) {
             case FORWARD -> newPos=this.v.add(this.orient.toUnitVector());
             case BACKWARD -> newPos=this.v.add(this.orient.toUnitVector().opposite());
         }
-        if (map.canMoveTo(newPos)) {
+        if (map.canMoveTo(newPos) || newPos.equals(this.getPosition())) {
             positionChanged(this.v, newPos);
             this.v = newPos;
         }

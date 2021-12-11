@@ -1,6 +1,7 @@
 package agh.ics.oop.gui;
 
 import agh.ics.oop.IMapElement;
+import agh.ics.oop.Vector2d;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -17,6 +18,9 @@ public class GuiElementBox extends App{
     public GuiElementBox(IMapElement object) throws FileNotFoundException {
 
         Image image = new Image(new FileInputStream(object.imageAddress()));
+        if (object.getPosition().equals(new Vector2d(2,6))){
+            System.out.println(object.imageAddress());
+        }
         Label label = new Label(object.getName());
         ImageView imageView = new ImageView(image);
 

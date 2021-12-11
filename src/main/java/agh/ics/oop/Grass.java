@@ -1,6 +1,8 @@
 package agh.ics.oop;
 
 
+import java.util.HashSet;
+import java.util.Set;
 
 public class Grass implements IMapElement {
 
@@ -12,6 +14,13 @@ public class Grass implements IMapElement {
     public Vector2d getPosition() {
         return v;
     }
+    private final Set<IPositionChangeObserver> observers = new HashSet<>();
+
+    @Override
+    public void addObserver(IPositionChangeObserver observer) {
+        observers.add(observer);
+    }
+
     public String toString() {
         return "*";
     }

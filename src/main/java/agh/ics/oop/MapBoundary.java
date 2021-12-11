@@ -18,10 +18,9 @@ public class MapBoundary implements IPositionChangeObserver {
 
 
     public Vector2d getBottomLeft(){
-
         return new Vector2d(objectsX.first().getKey().x,objectsY.first().getKey().y);
-
     }
+
     public Vector2d getTopRight(){
         return  new Vector2d(objectsX.last().getKey().x, objectsY.last().getKey().y);
     }

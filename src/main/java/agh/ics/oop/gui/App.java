@@ -2,9 +2,11 @@ package agh.ics.oop.gui;
 
 import agh.ics.oop.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
@@ -16,32 +18,43 @@ import java.util.List;
 
 
 
-public class App extends Application {
+public class App extends Application implements IPositionChangeObserver {
 
     private final AbstractWorldMap field = new GrassField(10);
-    private final GridPane root = new GridPane();
 
+    public int moveDelay= 200;
+    SimulationEngine engine;
+    GridPane root = new GridPane();
 
-    //application initiation
     public void init() {
 
         String[] args = getParameters().getRaw().toArray(new String[0]);
         List<MoveDirection> directions= OptionsParser.parse(args);
         Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
-        IEngine engine = new SimulationEngine(directions, field, positions);
-        engine.run();
+        this.engine = new SimulationEngine(directions, field, positions);
+        engine.addObserver(this);
+        setGrid();
+        Thread ThreadedSimulationEngine = new Thread(engine);
+        ThreadedSimulationEngine.start();
+
+
     }
 
     @Override
     public void start(Stage primaryStage) {
+        System.out.println("it starts");
 
-        root.setGridLinesVisible(true);
-        setGrid();
 
-        Scene scene = new Scene(root, 600, 600);
+        Button move = new Button("Start");
+
+        VBox x = new VBox(root, move);
+        Scene scene = new Scene(x, 600, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
     }
+
 
 
 
@@ -49,7 +62,6 @@ public class App extends Application {
     public void setGrid() {
         int width = Math.abs(field.getBottomLeft().x - field.getTopRight().x);
         int height = Math.abs(field.getBottomLeft().y - field.getTopRight().y);
-
         Vector2d bl = field.getBottomLeft();
 
         int minusRow=0;
@@ -80,7 +92,8 @@ public class App extends Application {
 
     public void addObject(Object o, int col, int row) {
         try {
-            GuiElementBox guiElementBox = new GuiElementBox((IMapElement) o);
+            IMapElement y = (IMapElement) o;
+            GuiElementBox guiElementBox = new GuiElementBox(y);
             VBox x = guiElementBox.getVBox();
 
             GridPane.setRowIndex(x,row);
@@ -102,13 +115,26 @@ public class App extends Application {
         GridPane.setRowIndex(label,i);
         GridPane.setColumnIndex(label,j);
         label.setAlignment(Pos.CENTER);
-
         root.getChildren().add(label);
+
     }
 
 
+    @Override
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        Platform.runLater(() -> {
+            root.getChildren().clear();
+            setGrid();
+            root.setGridLinesVisible(true);
+
+        });
+        try {
+            Thread.sleep(moveDelay);
+        }
+        catch (InterruptedException ex) {
+            System.exit(0);
+        }
 
 
-
-
+    }
 }
