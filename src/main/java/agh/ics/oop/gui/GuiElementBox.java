@@ -18,9 +18,7 @@ public class GuiElementBox extends App{
     public GuiElementBox(IMapElement object) throws FileNotFoundException {
 
         Image image = new Image(new FileInputStream(object.imageAddress()));
-        if (object.getPosition().equals(new Vector2d(2,6))){
-            System.out.println(object.imageAddress());
-        }
+
         Label label = new Label(object.getName());
         ImageView imageView = new ImageView(image);
 

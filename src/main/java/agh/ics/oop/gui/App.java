@@ -8,23 +8,31 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 
 public class App extends Application implements IPositionChangeObserver {
 
     private final AbstractWorldMap field = new GrassField(10);
 
-    public int moveDelay= 200;
+    public int moveDelay= 300;
     SimulationEngine engine;
     GridPane root = new GridPane();
+
+    public App() {
+
+    }
+
+
 
     public void init() {
 
@@ -33,10 +41,8 @@ public class App extends Application implements IPositionChangeObserver {
         Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
         this.engine = new SimulationEngine(directions, field, positions);
         engine.addObserver(this);
-        setGrid();
         Thread ThreadedSimulationEngine = new Thread(engine);
         ThreadedSimulationEngine.start();
-
 
     }
 
@@ -44,10 +50,11 @@ public class App extends Application implements IPositionChangeObserver {
     public void start(Stage primaryStage) {
         System.out.println("it starts");
 
-
+        TextField textField = new TextField();
+        setGrid();
         Button move = new Button("Start");
 
-        VBox x = new VBox(root, move);
+        VBox x = new VBox(root, move, textField);
         Scene scene = new Scene(x, 600, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -55,15 +62,11 @@ public class App extends Application implements IPositionChangeObserver {
 
     }
 
-
-
-
     //setting grid
     public void setGrid() {
         int width = Math.abs(field.getBottomLeft().x - field.getTopRight().x);
         int height = Math.abs(field.getBottomLeft().y - field.getTopRight().y);
         Vector2d bl = field.getBottomLeft();
-
         int minusRow=0;
         int plusCol=0;
 
@@ -92,12 +95,15 @@ public class App extends Application implements IPositionChangeObserver {
 
     public void addObject(Object o, int col, int row) {
         try {
+
             IMapElement y = (IMapElement) o;
             GuiElementBox guiElementBox = new GuiElementBox(y);
             VBox x = guiElementBox.getVBox();
 
+
             GridPane.setRowIndex(x,row);
             GridPane.setColumnIndex(x,col);
+
             x.setAlignment(Pos.CENTER);
 
             root.getChildren().add(x);
@@ -106,6 +112,9 @@ public class App extends Application implements IPositionChangeObserver {
             System.exit(0);
         }
     }
+
+
+
 
 
     public void addLabel(Label label, int i, int j){
@@ -126,7 +135,6 @@ public class App extends Application implements IPositionChangeObserver {
             root.getChildren().clear();
             setGrid();
             root.setGridLinesVisible(true);
-
         });
         try {
             Thread.sleep(moveDelay);
