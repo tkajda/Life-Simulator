@@ -13,7 +13,6 @@ public class SimulationEngine implements IEngine, IPositionChangeObserver, Runna
     private List<MoveDirection> moves;
     private final IWorldMap map;
     private final Set<IPositionChangeObserver> observers = new HashSet<>();
-    private int currentAnimal = 0;
 
     public SimulationEngine( IWorldMap map, Vector2d[] initialPositions) {
         this.map = map;

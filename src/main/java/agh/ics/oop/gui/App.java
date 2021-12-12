@@ -19,23 +19,22 @@ import java.util.List;
 
 public class App extends Application implements IPositionChangeObserver {
 
-    private final AbstractWorldMap field = new GrassField(10);
+    private AbstractWorldMap field;
     private List<MoveDirection> directions;
     public int moveDelay= 300;
 
 
-    TextField textField = new TextField();
+    TextField textField;
     SimulationEngine engine;
-    GridPane root = new GridPane();
-
-    public App() {
-
-    }
-
+    GridPane root;
 
 
     public void init() {
+
         Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
+        this.textField = new TextField();
+        this.field  = new GrassField(10);
+        this.root = new GridPane();
         this.engine = new SimulationEngine( field, positions);
         engine.addObserver(this);
 
