@@ -10,13 +10,12 @@ import java.util.Set;
 public class SimulationEngine implements IEngine, IPositionChangeObserver, Runnable {
 
     private final List<Animal> animals = new ArrayList<>();
-    private final List<MoveDirection> moves;
+    private List<MoveDirection> moves;
     private final IWorldMap map;
     private final Set<IPositionChangeObserver> observers = new HashSet<>();
+    private int currentAnimal = 0;
 
-
-    public SimulationEngine(List<MoveDirection> moves, IWorldMap map, Vector2d[] initialPositions) {
-        this.moves = moves;
+    public SimulationEngine( IWorldMap map, Vector2d[] initialPositions) {
         this.map = map;
 
         for (Vector2d pos : initialPositions) {
@@ -37,6 +36,10 @@ public class SimulationEngine implements IEngine, IPositionChangeObserver, Runna
         observers.remove(observer);
     }
 
+
+    public void setMoves(List<MoveDirection> moves) {
+        this.moves=moves;
+    }
 
 
     @Override

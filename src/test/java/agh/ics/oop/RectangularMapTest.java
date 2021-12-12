@@ -22,7 +22,7 @@ class RectangularMapTest {
 
         assertTrue(map.isOccupied(new Vector2d(1,1)));
         assertTrue(map.canMoveTo(new Vector2d(3,3)));
-        assertFalse(map.place(animal2));
+        assertThrows(IllegalArgumentException.class, () ->map.place(animal2));
         assertEquals(map.objectAt(new Vector2d(1, 1)), animal);
         assertTrue(map.place(animal3));
         assertEquals(map.objectAt(new Vector2d(10, 10)), animal3);

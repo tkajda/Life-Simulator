@@ -3,28 +3,28 @@ package agh.ics.oop.gui;
 import agh.ics.oop.*;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 
 public class App extends Application implements IPositionChangeObserver {
 
     private final AbstractWorldMap field = new GrassField(10);
-
+    private List<MoveDirection> directions;
     public int moveDelay= 300;
+
+
+    TextField textField = new TextField();
     SimulationEngine engine;
     GridPane root = new GridPane();
 
@@ -35,32 +35,43 @@ public class App extends Application implements IPositionChangeObserver {
 
 
     public void init() {
-
-        String[] args = getParameters().getRaw().toArray(new String[0]);
-        List<MoveDirection> directions= OptionsParser.parse(args);
         Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
-        this.engine = new SimulationEngine(directions, field, positions);
+        this.engine = new SimulationEngine( field, positions);
         engine.addObserver(this);
-        Thread ThreadedSimulationEngine = new Thread(engine);
-        ThreadedSimulationEngine.start();
 
     }
 
     @Override
     public void start(Stage primaryStage) {
-        System.out.println("it starts");
 
-        TextField textField = new TextField();
+
         setGrid();
         Button move = new Button("Start");
+        textField.setPrefWidth(300);
+
+        move.setOnAction( event -> {
+            onEvent();
+        });
 
         VBox x = new VBox(root, move, textField);
+        x.setSpacing(15);
+        x.setAlignment(Pos.CENTER);
         Scene scene = new Scene(x, 600, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
 
 
     }
+
+    public void onEvent() {
+        String[] args = textField.getText().split(" ");
+        List<MoveDirection> directions= OptionsParser.parse(args);
+        engine.setMoves(directions);
+        Thread engineThread = new Thread(engine);
+        engineThread.start();
+    }
+
+
 
     //setting grid
     public void setGrid() {
@@ -69,6 +80,9 @@ public class App extends Application implements IPositionChangeObserver {
         Vector2d bl = field.getBottomLeft();
         int minusRow=0;
         int plusCol=0;
+
+        root.setGridLinesVisible(true);
+
 
         for(int i =1 ; i<height+2;i++){
             Label label = new Label(String.valueOf(field.getTopRight().y+minusRow));
@@ -97,6 +111,7 @@ public class App extends Application implements IPositionChangeObserver {
         try {
 
             IMapElement y = (IMapElement) o;
+
             GuiElementBox guiElementBox = new GuiElementBox(y);
             VBox x = guiElementBox.getVBox();
 

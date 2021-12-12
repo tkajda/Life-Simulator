@@ -47,8 +47,6 @@ public class AnimalTest {
             }
             abc.move(MoveDirection.LEFT);
 
-//            assertTrue(abc.getPos().x <= map1.getTopRight().x && 0 <= abc.getPos().x &&
-//                    abc.getPos().y <= map1.getTopRight().y && 0 <= abc.getPos().y);
         }
     }
 
@@ -57,10 +55,10 @@ public class AnimalTest {
     void positionTest() {
 
 
-        Vector2d[] vectors = {new Vector2d(-1,-1),
-                                new Vector2d(-1,1),
-                                new Vector2d(-5,-1),
-                                new Vector2d(-1,0)};
+        Vector2d[] vectors = {new Vector2d(3,1),
+                                new Vector2d(3,4),
+                                new Vector2d(-1,2),
+                                new Vector2d(0,3)};
 
         MoveDirection[][] moves = {
                 {MoveDirection.BACKWARD,MoveDirection.LEFT,MoveDirection.BACKWARD,MoveDirection.RIGHT}, //test1
@@ -94,11 +92,11 @@ public class AnimalTest {
                         MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.LEFT,
                         MoveDirection.FORWARD, MoveDirection.BACKWARD, MoveDirection.BACKWARD, MoveDirection.BACKWARD, MoveDirection.BACKWARD};
 
-        Vector2d[] positions = {new Vector2d(2, 3), new Vector2d(-1, -1), new Vector2d(0, -1),
-                new Vector2d(-1, -1), new Vector2d(-1, -2), new Vector2d(-1, -3),
-                new Vector2d(-1, -4), new Vector2d(-1, -1), new Vector2d(-2, -1),
-                new Vector2d(-3, -1), new Vector2d(-4, -1), new Vector2d(-5, -1),
-                new Vector2d(-1, -1), new Vector2d(-1, 0), new Vector2d(0, 1)};
+        Vector2d[] positions = {new Vector2d(2, 3), new Vector2d(2, 3), new Vector2d(3, 3),
+                new Vector2d(3, 3), new Vector2d(3, 2), new Vector2d(3, 1),
+                new Vector2d(3, 0), new Vector2d(3, 0), new Vector2d(2, 0),
+                new Vector2d(1, 0), new Vector2d(0, 0), new Vector2d(-1, 0),
+                new Vector2d(-1, 0), new Vector2d(-1, 1), new Vector2d(0, 1)};
 
         MapDirection[]  directions = { MapDirection.NORTH ,MapDirection.EAST ,MapDirection.EAST ,
                 MapDirection.SOUTH ,MapDirection.SOUTH ,MapDirection.SOUTH ,MapDirection.SOUTH ,
