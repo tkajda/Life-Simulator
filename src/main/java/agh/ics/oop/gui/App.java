@@ -1,8 +1,11 @@
 package agh.ics.oop.gui;
 
 import agh.ics.oop.*;
+import agh.ics.oop.AbstractWorldMap;
+import agh.ics.oop.Vector2d;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -13,7 +16,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -21,7 +23,7 @@ public class App extends Application implements IPositionChangeObserver {
 
     private AbstractWorldMap field;
     private List<MoveDirection> directions;
-    public int moveDelay= 300;
+    public int moveDelay= 400;
 
 
     TextField textField;
@@ -31,7 +33,10 @@ public class App extends Application implements IPositionChangeObserver {
 
     public void init() {
 
-        Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
+        Vector2d[] positions = {
+                new Vector2d(2, 2),
+                new Vector2d(3, 4)
+        };
         this.textField = new TextField();
         this.field  = new GrassField(10);
         this.root = new GridPane();
@@ -81,7 +86,10 @@ public class App extends Application implements IPositionChangeObserver {
         int plusCol=0;
 
         root.setGridLinesVisible(true);
-
+        Label yx= new Label("y/x");
+//        yx.setAlignment(Pos.CENTER);
+        GridPane.setHalignment(yx, HPos.CENTER);
+        root.add(yx, 0,0);
 
         for(int i =1 ; i<height+2;i++){
             Label label = new Label(String.valueOf(field.getTopRight().y+minusRow));
@@ -119,7 +127,6 @@ public class App extends Application implements IPositionChangeObserver {
             GridPane.setColumnIndex(x,col);
 
             x.setAlignment(Pos.CENTER);
-
             root.getChildren().add(x);
         }
         catch (FileNotFoundException ex) {

@@ -24,7 +24,7 @@ public class GrassField extends AbstractWorldMap {
         while (i < grassNum) {
             Vector2d pos = new Vector2d(generator.nextInt(a), generator.nextInt(a));
             if (!super.isOccupied(pos)) {
-                Grass ngrass = new Grass(pos);
+                Grass ngrass = new Grass(pos, super.plantEnergy);
 
                 grassFields.put(pos, ngrass);
                 boundedMap.addToMap( ngrass.getPosition(), ngrass);

@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,12 +12,14 @@ public class SimulationEngine implements IEngine, IPositionChangeObserver, Runna
 
     private final List<Animal> animals = new ArrayList<>();
     private List<MoveDirection> moves;
-    private final IWorldMap map;
+    private final AbstractWorldMap map;
     private final Set<IPositionChangeObserver> observers = new HashSet<>();
+    private int grassEnergy = 5;
+    private int grassSpawnedEachDay = 2;
 
-    public SimulationEngine( IWorldMap map, Vector2d[] initialPositions) {
+    public SimulationEngine( AbstractWorldMap map, Vector2d[] initialPositions) {
         this.map = map;
-
+        map.setJungle(0.4);
         for (Vector2d pos : initialPositions) {
 
             Animal animal = new Animal(map, pos);
@@ -35,6 +38,9 @@ public class SimulationEngine implements IEngine, IPositionChangeObserver, Runna
         observers.remove(observer);
     }
 
+    public void setGrassEnergy(int grassEnergy) {
+        this.grassEnergy = grassEnergy;
+    }
 
     public void setMoves(List<MoveDirection> moves) {
         this.moves=moves;
@@ -43,13 +49,27 @@ public class SimulationEngine implements IEngine, IPositionChangeObserver, Runna
 
     @Override
     public void run() {
-        System.out.println(map);
+        System.out.println("its running");
+
+
+        //BASIC VERSION
         int currentAnimal = 0;
         for (MoveDirection oneMove : moves) {
             animals.get(currentAnimal).move(oneMove);
             currentAnimal = (currentAnimal + 1) % animals.size();
         }
-        System.out.println(map);
+        // RANDOM MOVES
+//        int i = 0;
+//        while(i<100) {
+//            for(Animal animal: animals) {
+//                animal.moveWithPref();
+////                System.out.println(i);
+//            }
+//            map.spawnGrassOnSteppe(this.grassSpawnedEachDay);
+//            map.removeDeadAnimals(this);
+//            i++;
+//        }
+
     }
 
     @Override

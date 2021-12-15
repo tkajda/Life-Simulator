@@ -3,9 +3,10 @@ package agh.ics.oop;
 
 enum MapDirection {
     NORTH,
+    EAST,
     SOUTH,
-    WEST,
-    EAST;
+    WEST;
+
 
     public String toString() {
         return switch (this) {

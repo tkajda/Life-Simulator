@@ -7,13 +7,16 @@ import java.util.Set;
 public class Grass implements IMapElement {
 
     private final Vector2d v;
-
-    public Grass(Vector2d grassPosition) {
-        v = grassPosition;
+    public int energy;
+    public Grass(Vector2d grassPosition, int grassEnergy) {
+        this.v = grassPosition;
+        this.energy = grassEnergy;
     }
+
     public Vector2d getPosition() {
         return v;
     }
+
     private final Set<IPositionChangeObserver> observers = new HashSet<>();
 
     @Override
@@ -29,6 +32,7 @@ public class Grass implements IMapElement {
     public String imageAddress() {
         return "src/main/resources/grass.png";
     }
+
     @Override
     public String getName() {
         return "Trawa";

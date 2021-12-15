@@ -15,6 +15,8 @@ class RectangularMap extends AbstractWorldMap {
     }
 
 
+
+
     @Override
     public String toString() {
         return super.toString();
