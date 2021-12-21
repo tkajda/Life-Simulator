@@ -16,15 +16,19 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class App extends Application implements IPositionChangeObserver {
+public class App extends Application implements IMapObserver {
 
     private AbstractWorldMap field;
     private List<MoveDirection> directions;
-    public int moveDelay= 400;
-
+    public int moveDelay= 500;
+    private int mapWidth=20; //placeholder
+    private int mapHeight=20; //placeholder
+    private Vector2d mapBL =  new Vector2d(0,0);
+    private Vector2d mapTR = new Vector2d (mapWidth-1, mapHeight-1);
 
     TextField textField;
     SimulationEngine engine;
@@ -35,10 +39,28 @@ public class App extends Application implements IPositionChangeObserver {
 
         Vector2d[] positions = {
                 new Vector2d(2, 2),
-                new Vector2d(3, 4)
+                new Vector2d(3, 4),
+                new Vector2d(8, 9),
+                new Vector2d(2, 6),
+                new Vector2d(4, 5),
+                new Vector2d(1, 9),
+                new Vector2d(1, 2),
+                new Vector2d(4, 9),
+                new Vector2d(14, 19),
+                new Vector2d(5, 9),
+                new Vector2d(3, 9),
+                new Vector2d(14, 9),
+                new Vector2d(14, 8),
+                new Vector2d(10, 19),
+                new Vector2d(12, 11),
+                new Vector2d(17, 2),
+                new Vector2d(13, 5),
+                new Vector2d(18, 15),
+                new Vector2d(16, 1),
+
         };
         this.textField = new TextField();
-        this.field  = new GrassField(10);
+        this.field  = new GrassField(0);
         this.root = new GridPane();
         this.engine = new SimulationEngine( field, positions);
         engine.addObserver(this);
@@ -48,16 +70,15 @@ public class App extends Application implements IPositionChangeObserver {
     @Override
     public void start(Stage primaryStage) {
 
-
         setGrid();
+
         Button move = new Button("Start");
-        textField.setPrefWidth(300);
 
         move.setOnAction( event -> {
             onEvent();
         });
 
-        VBox x = new VBox(root, move, textField);
+        VBox x = new VBox(root, move);
         x.setSpacing(15);
         x.setAlignment(Pos.CENTER);
         Scene scene = new Scene(x, 600, 600);
@@ -68,57 +89,65 @@ public class App extends Application implements IPositionChangeObserver {
     }
 
     public void onEvent() {
-        String[] args = textField.getText().split(" ");
-        List<MoveDirection> directions= OptionsParser.parse(args);
-        engine.setMoves(directions);
+//        String[] args = textField.getText().split(" ");
+//        List<MoveDirection> directions= OptionsParser.parse(args);
+//        engine.setMoves(directions);
         Thread engineThread = new Thread(engine);
         engineThread.start();
+    }
+
+    public void stop() {
+        System.exit(0);
     }
 
 
 
     //setting grid
     public void setGrid() {
-        int width = Math.abs(field.getBottomLeft().x - field.getTopRight().x);
-        int height = Math.abs(field.getBottomLeft().y - field.getTopRight().y);
-        Vector2d bl = field.getBottomLeft();
+        int width = mapWidth;
+        int height = mapHeight;
+        Vector2d bl = new Vector2d(0,0);
         int minusRow=0;
         int plusCol=0;
 
-        root.setGridLinesVisible(true);
-        Label yx= new Label("y/x");
-//        yx.setAlignment(Pos.CENTER);
-        GridPane.setHalignment(yx, HPos.CENTER);
-        root.add(yx, 0,0);
+
 
         for(int i =1 ; i<height+2;i++){
-            Label label = new Label(String.valueOf(field.getTopRight().y+minusRow));
+            Label label = new Label(String.valueOf(mapHeight+minusRow));
             minusRow--;
             addLabel(label,i,0);
         }
 
         for (int j = 1; j< width+2;j++) {
-            Label label = new Label(String.valueOf(field.getBottomLeft().x+plusCol));
+            Label label = new Label(String.valueOf(plusCol));
             plusCol++;
             addLabel(label,0,j);
         }
 
         for (int i = 0; i < height+2;i++) {
             for (int j=0; j<width+2;j++) {
-                if (field.isOccupied(new Vector2d(bl.x+j,bl.y+i))){
-                    addObject(field.objectAt(new Vector2d(bl.x+j,bl.y+i)), j+1, height-i+1);
+                if (field.isOccupied(new Vector2d(j,i))){
+                    for(Object object: (ArrayList)field.objectAt(new Vector2d(j,i))) {
+                        addObject(object, j+1, height-i+1);
+                    }
+                }
+                else if (field.isOccupiedByGrass(new Vector2d(j,i))) {
+                    addObject(field.grassAt(new Vector2d(j,i)), j+1, height-i+1);
                 }
             }
         }
+
+        root.setGridLinesVisible(true);
+        Label yx= new Label("y/x");
+        GridPane.setHalignment(yx, HPos.CENTER);
+        root.add(yx, 0,0);
 
     }
 
 
     public void addObject(Object o, int col, int row) {
         try {
-
             IMapElement y = (IMapElement) o;
-
             GuiElementBox guiElementBox = new GuiElementBox(y);
             VBox x = guiElementBox.getVBox();
 
@@ -151,8 +180,9 @@ public class App extends Application implements IPositionChangeObserver {
 
 
     @Override
-    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+    public void simulateDay() {
         Platform.runLater(() -> {
+            root.setGridLinesVisible(false);
             root.getChildren().clear();
             setGrid();
             root.setGridLinesVisible(true);
@@ -163,7 +193,5 @@ public class App extends Application implements IPositionChangeObserver {
         catch (InterruptedException ex) {
             System.exit(0);
         }
-
-
     }
 }

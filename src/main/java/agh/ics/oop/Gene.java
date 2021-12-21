@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Gene {
-    List<Integer> genes = new ArrayList<Integer>();
+    List<Integer> genes = new ArrayList<>();
     public static int SIZE = 32;
     int i = 0;
 
@@ -25,6 +25,7 @@ public class Gene {
         int side = rndGenerator.nextInt(2);
 
         int proportion = (int) (parent1.energy/parent2.energy)*100;
+
         if (side == 0) {
             for (int i =0; i<proportion; i++) {
                 this.genes.add(parent1.getAnimalGenes().get(i));

@@ -23,6 +23,8 @@ class RectangularMap extends AbstractWorldMap {
     }
 
 
+    @Override
+    public void simulateDay() {
 
-
+    }
 }

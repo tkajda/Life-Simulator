@@ -16,14 +16,12 @@ public class GuiElementBox extends App{
 
         Image image = new Image(new FileInputStream(object.imageAddress()));
 
-        Label label = new Label(object.getName());
         ImageView imageView = new ImageView(image);
 
         imageView.setFitWidth(20);
         imageView.setFitHeight(20);
 
-
-        this.vBox = new VBox(imageView, label);
+        this.vBox = new VBox(imageView);
 
     }
 

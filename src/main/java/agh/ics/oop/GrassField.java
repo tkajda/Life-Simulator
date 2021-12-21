@@ -54,4 +54,8 @@ public class GrassField extends AbstractWorldMap {
         return null;
     }
 
+    @Override
+    public void simulateDay() {
+
+    }
 }
