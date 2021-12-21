@@ -2,10 +2,7 @@ package agh.ics.oop;
 
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class SimulationEngine implements  Runnable, IEngine, IMapObserver,IPositionChangeObserver {
@@ -17,19 +14,32 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver,IPosit
     private int grassEnergy = 88;
     private int grassSpawnedEachDay = 1;
 
-    public SimulationEngine( AbstractWorldMap map, Vector2d[] initialPositions) {
+    public SimulationEngine( AbstractWorldMap map) {
         this.map = map;
         map.addObserver(this);
         map.setJungle(0.4);
 
         map.setJungle(0.4);
-        for (Vector2d pos : initialPositions) {
+        spawnStartingAnimals(10);
+    }
 
-            Animal animal = new Animal(map, pos);
-            animals.add(animal);
-            map.place(animal);
+
+    public void spawnStartingAnimals(int numberOfAnimals) {
+        Random rng = new Random();
+        int i = 0;
+        while(i<numberOfAnimals) {
+            Vector2d animalPosition = new Vector2d(rng.nextInt(20), rng.nextInt(20));
+            if (!map.isOccupied(animalPosition)) {
+                Animal animal = new Animal(map, animalPosition);
+                animals.add(animal);
+                map.place(animal);
+                i++;
+            }
         }
     }
+
+
+
 
     public void addObserver(IMapObserver observer) {
         observers.add(observer);
@@ -50,19 +60,30 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver,IPosit
         System.out.println("its running");
 
         int i = 0;
-        while(i<100) {
+        while(i<200) {
             for(Animal animal: animals) {
                 animal.moveWithPref();
             }
             map.spawnGrassOnSteppe(this.grassSpawnedEachDay);
+            map.eatPlants();
 //            map.removeDeadAnimals();
+
+            this.removeDead();
+
             i++;
 
-
+            System.out.println("day" + i);
             simulateDay();
         }
+        System.out.println(animals);
+        System.out.println(map);
 
     }
+
+    public void removeDead() {
+        animals.removeIf(animal -> animal.getEnergy() <= 0);
+    }
+
 
     public void simulateDay() {
         for(IMapObserver observer: observers) {

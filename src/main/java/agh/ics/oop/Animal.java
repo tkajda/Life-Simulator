@@ -8,9 +8,10 @@ class Animal  implements IMapElement {
     private final AbstractWorldMap map;
     private final Set<IPositionChangeObserver> observers = new HashSet<>();
     private final Gene gene = new Gene();
-    public int energy = 15;
+    public int energy;
     public int moveEnergy;
     private List<Integer> genes;
+
 
 
     public Animal(AbstractWorldMap map) {
@@ -78,10 +79,10 @@ class Animal  implements IMapElement {
             case SOUTH -> "down";
             case EAST -> "right";
             case WEST -> "left";
-            case NW -> "left";
-            case NE -> "left";
-            case SW -> "left";
-            case SE -> "left";
+            case NW -> "topleft";
+            case NE -> "topright";
+            case SW -> "bottomleft";
+            case SE -> "bottomright";
         };
         return "src/main/resources/" + x + ".png";
     }
@@ -97,6 +98,25 @@ class Animal  implements IMapElement {
         return this.genes;
     }
 
+
+    public void moveWithPref() {
+
+        Random x = new Random();
+        this.energy-=this.moveEnergy;
+
+        int a = x.nextInt(32);
+        List<Integer> arr = this.gene.getGenes();
+        switch(arr.get(a)) {
+            case 0: this.move(MoveDirection.FORWARD);
+            case 4: this.move(MoveDirection.BACKWARD);
+            default:
+                for (int i = 0; i<arr.get(a);i++) {
+                    this.orient = this.orient.next();
+                }
+                positionChanged(this.getPosition(),this.getPosition());
+
+        }
+    }
     public void move(MoveDirection direction)  {
 
         Vector2d newPos = this.getPosition();
@@ -114,25 +134,6 @@ class Animal  implements IMapElement {
     }
 
 
-    //PROJECT PROJECT PROJECT PROJECT PROJECT PROJECT PROJECT PROJECT PROJECT PROJECT PROJECT PROJECT PROJECT
-//
-    public void moveWithPref() {
-
-        Random x = new Random();
-        this.energy-=this.moveEnergy;
-
-        int a = x.nextInt(32);
-        List<Integer> arr = this.gene.getGenes();
-        switch(arr.get(a)) {
-            case 0: this.move(MoveDirection.FORWARD);
-            case 4: this.move(MoveDirection.BACKWARD);
-            default:
-                for (int i = 0; i<arr.get(a);i++) {
-                    this.orient = this.orient.next();
-                }
-        }
-    }
-//
 
 
 
@@ -146,7 +147,7 @@ class Animal  implements IMapElement {
         this.genes = gene.getGenes();
     }
 
-    public void setGenesBaseOnParents(Animal parent1, Animal parent2) {
+    public void setGenesBasedOnParents(Animal parent1, Animal parent2) {
         this.gene.setGenes(parent1, parent2);
         this.genes = gene.getGenes();
     }
@@ -162,7 +163,7 @@ class Animal  implements IMapElement {
         otherAnimal.energy = (int) (otherAnimal.energy*3/4);
 
         Animal newAnimal = new Animal(this.map, this.getPosition());
-        newAnimal.setGenesBaseOnParents(this, otherAnimal);
+        newAnimal.setGenesBasedOnParents(this, otherAnimal);
         newAnimal.setEnergy(newAnimalEnergy, moveEnergy);
         map.spawnNewAnimal(newAnimal);
     }

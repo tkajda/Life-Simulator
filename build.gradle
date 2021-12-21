@@ -10,7 +10,7 @@ repositories {
 }
 javafx {
     version = "17"
-    modules = [ 'javafx.controls' ]
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
 dependencies {
@@ -24,6 +24,8 @@ test {
     useJUnitPlatform()
 }
 
+
 application {
     mainClassName = 'agh.ics.oop.World'
+    org.openjfx.MainApp
 }

@@ -23,46 +23,21 @@ import java.util.List;
 public class App extends Application implements IMapObserver {
 
     private AbstractWorldMap field;
-    private List<MoveDirection> directions;
-    public int moveDelay= 500;
+    public int moveDelay= 700;
     private int mapWidth=20; //placeholder
     private int mapHeight=20; //placeholder
     private Vector2d mapBL =  new Vector2d(0,0);
     private Vector2d mapTR = new Vector2d (mapWidth-1, mapHeight-1);
 
-    TextField textField;
     SimulationEngine engine;
     GridPane root;
 
 
     public void init() {
 
-        Vector2d[] positions = {
-                new Vector2d(2, 2),
-                new Vector2d(3, 4),
-                new Vector2d(8, 9),
-                new Vector2d(2, 6),
-                new Vector2d(4, 5),
-                new Vector2d(1, 9),
-                new Vector2d(1, 2),
-                new Vector2d(4, 9),
-                new Vector2d(14, 19),
-                new Vector2d(5, 9),
-                new Vector2d(3, 9),
-                new Vector2d(14, 9),
-                new Vector2d(14, 8),
-                new Vector2d(10, 19),
-                new Vector2d(12, 11),
-                new Vector2d(17, 2),
-                new Vector2d(13, 5),
-                new Vector2d(18, 15),
-                new Vector2d(16, 1),
-
-        };
-        this.textField = new TextField();
         this.field  = new GrassField(0);
         this.root = new GridPane();
-        this.engine = new SimulationEngine( field, positions);
+        this.engine = new SimulationEngine( field);
         engine.addObserver(this);
 
     }
@@ -89,9 +64,6 @@ public class App extends Application implements IMapObserver {
     }
 
     public void onEvent() {
-//        String[] args = textField.getText().split(" ");
-//        List<MoveDirection> directions= OptionsParser.parse(args);
-//        engine.setMoves(directions);
         Thread engineThread = new Thread(engine);
         engineThread.start();
     }
@@ -109,8 +81,6 @@ public class App extends Application implements IMapObserver {
         Vector2d bl = new Vector2d(0,0);
         int minusRow=0;
         int plusCol=0;
-
-
 
         for(int i =1 ; i<height+2;i++){
             Label label = new Label(String.valueOf(mapHeight+minusRow));
@@ -181,6 +151,7 @@ public class App extends Application implements IMapObserver {
 
     @Override
     public void simulateDay() {
+
         Platform.runLater(() -> {
             root.setGridLinesVisible(false);
             root.getChildren().clear();
@@ -193,5 +164,6 @@ public class App extends Application implements IMapObserver {
         catch (InterruptedException ex) {
             System.exit(0);
         }
+
     }
 }

@@ -20,7 +20,7 @@ public class Gene {
         Collections.sort(this.genes);
     }
 
-    public void setBaseOnParents(Animal parent1, Animal parent2) {
+    public void setGenesBasedOnParents(Animal parent1, Animal parent2) {
         Random rndGenerator = new Random();
         int side = rndGenerator.nextInt(2);
 
@@ -55,19 +55,17 @@ public class Gene {
             }
         }
         else if(parent1.energy> parent2.energy) {
-            setBaseOnParents(parent1,parent2);
+            setGenesBasedOnParents(parent1,parent2);
         }
         else {
-            setBaseOnParents(parent2,parent1);
+            setGenesBasedOnParents(parent2,parent1);
         }
-
 
     }
 
     public List<Integer> getGenes() {
         return this.genes;
     }
-
 
 
 }
