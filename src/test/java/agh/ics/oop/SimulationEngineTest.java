@@ -3,6 +3,9 @@ package agh.ics.oop;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
+import agh.ics.oop.Console.OptionsParser;
+import agh.ics.oop.Enums.MoveDirection;
+import agh.ics.oop.WorldClasses.*;
 import org.junit.jupiter.api.Test;
 
 public class SimulationEngineTest {

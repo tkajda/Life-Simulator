@@ -1,5 +1,7 @@
-package agh.ics.oop;
+package agh.ics.oop.Console;
 
+
+import agh.ics.oop.Enums.MoveDirection;
 
 import java.util.ArrayList;
 import java.util.List;

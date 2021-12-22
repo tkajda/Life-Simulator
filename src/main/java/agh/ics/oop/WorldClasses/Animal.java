@@ -1,24 +1,55 @@
-package agh.ics.oop;
+package agh.ics.oop.WorldClasses;
+
+import agh.ics.oop.Interfaces.IMapElement;
+import agh.ics.oop.Interfaces.IPositionChangeObserver;
+import agh.ics.oop.Enums.*;
 
 import java.util.*;
 
-class Animal  implements IMapElement {
+public class Animal  implements IMapElement {
+
+    //refering to map
+    private final AbstractWorldMap map;
     private MapDirection orient;
     private Vector2d position;
-    private final AbstractWorldMap map;
+
+    //observers
     private final Set<IPositionChangeObserver> observers = new HashSet<>();
+
+    //genes
     private final Gene gene = new Gene();
-    public int energy;
-    public int moveEnergy;
     private List<Integer> genes;
 
+    //energy
+    public int energy;
+    public int moveEnergy;
 
 
-    public Animal(AbstractWorldMap map) {
+
+    //constructor
+    public Animal(AbstractWorldMap map, Vector2d initialPosition) {
         this.map = map;
+        this.position = initialPosition;
+        this.orient = MapDirection.NORTH;
+
+
+        Random rng= new Random();
+        int randomDirection = rng.nextInt(8);
+        switch (randomDirection) {
+            case 0 -> this.orient = MapDirection.NORTH;
+            case 1 -> this.orient = MapDirection.SE;
+            case 2 -> this.orient = MapDirection.SOUTH;
+            case 3 -> this.orient = MapDirection.SW;
+            case 4 -> this.orient = MapDirection.NW;
+            case 5 -> this.orient = MapDirection.WEST;
+            case 6 -> this.orient = MapDirection.EAST;
+            case 7 -> this.orient = MapDirection.NE;
+        }
     }
 
 
+
+    //methods to operate on animal observers
     public void addObserver(IPositionChangeObserver observer) {
         observers.add(observer);
     }
@@ -34,23 +65,28 @@ class Animal  implements IMapElement {
     }
 
 
-    public Animal(AbstractWorldMap map, Vector2d initialPosition) {
-        this.map = map;
-        this.position = initialPosition;
-        this.orient = MapDirection.NORTH;
-        Random x= new Random();
-        int randomDirection = x.nextInt(8);
-        switch (randomDirection) {
-            case 0 -> this.orient = MapDirection.NORTH;
-            case 1 -> this.orient = MapDirection.SE;
-            case 2 -> this.orient = MapDirection.SOUTH;
-            case 3 -> this.orient = MapDirection.SW;
-            case 4 -> this.orient = MapDirection.NW;
-            case 5 -> this.orient = MapDirection.WEST;
-            case 6 -> this.orient = MapDirection.EAST;
-            case 7 -> this.orient = MapDirection.NE;
-        }
+    //getters
+    public int getEnergy() {
+        return this.energy;
     }
+    public List<Integer> getGenes() {
+        return this.genes;
+    }
+    @Override
+    public String getName() {
+        return "Z"+ " " + this.getPosition().toString();
+    }
+
+    public MapDirection getDirection() {return orient;}
+
+    public Vector2d getPosition() {return position;}
+
+
+    public List<Integer> getAnimalGenes() {
+        return this.genes;
+    }
+
+
 
     public String toString() {
         return switch(this.orient) {
@@ -63,11 +99,6 @@ class Animal  implements IMapElement {
             case EAST -> ">";
             case WEST -> "<";
         };
-    }
-
-    @Override
-    public String getName() {
-        return "Z"+ " " + this.getPosition().toString();
     }
 
 
@@ -87,36 +118,29 @@ class Animal  implements IMapElement {
         return "src/main/resources/" + x + ".png";
     }
 
-    boolean isAt(Vector2d position) {return getPosition().equals(position);}
-
-    public MapDirection getDirection() {return orient;}
-
-    public Vector2d getPosition() {return position;}
 
 
-    public List<Integer> getAnimalGenes() {
-        return this.genes;
-    }
-
-
+    //do random move basing on genetype
+    //MoveDirection includes 8 directions now(6 are just rotations of animal)
     public void moveWithPref() {
 
-        Random x = new Random();
+        Random rng = new Random();
         this.energy-=this.moveEnergy;
 
-        int a = x.nextInt(32);
+        int gene = rng.nextInt(32);
         List<Integer> arr = this.gene.getGenes();
-        switch(arr.get(a)) {
+        switch(arr.get(gene)) {
             case 0: this.move(MoveDirection.FORWARD);
             case 4: this.move(MoveDirection.BACKWARD);
             default:
-                for (int i = 0; i<arr.get(a);i++) {
+                for (int i = 0; i<arr.get(gene);i++) {
                     this.orient = this.orient.next();
                 }
                 positionChanged(this.getPosition(),this.getPosition());
-
         }
     }
+
+    //make a move forward or backwards
     public void move(MoveDirection direction)  {
 
         Vector2d newPos = this.getPosition();
@@ -126,7 +150,6 @@ class Animal  implements IMapElement {
             case BACKWARD -> newPos=this.position.add(this.orient.toUnitVector().opposite());
         }
 
-
         if (map.canMoveTo(newPos) || newPos.equals(this.getPosition())) {
             positionChanged(this.position, newPos);
             this.position = newPos;
@@ -134,14 +157,20 @@ class Animal  implements IMapElement {
     }
 
 
-
-
-
+    //set energy, could also be included in constructor
     public void setEnergy(int startEnergy, int moveEnergy) {
         this.energy = startEnergy;
         this.moveEnergy = moveEnergy;
     }
 
+    //restoring energy if animal steps on grass
+    public void eatGrass(int energy) {
+        this.energy+=energy;
+    }
+
+
+    //methods to generate genes-random if animal doesnt have parents :(,
+    // setGenesBasedOnParents-if has 2 parents
     public void setRandomGene() {
         this.gene.setRandomGenes();
         this.genes = gene.getGenes();
@@ -152,28 +181,8 @@ class Animal  implements IMapElement {
         this.genes = gene.getGenes();
     }
 
-    public void eatGrass(int energy) {
-        this.energy+=energy;
-    }
 
-    public void copulate(Object object) {
-        Animal otherAnimal = (Animal) object;
-        int newAnimalEnergy = (int) ((this.energy /4) + (otherAnimal.energy /4));
-        this.energy = (int) (this.energy * 3/4);
-        otherAnimal.energy = (int) (otherAnimal.energy*3/4);
 
-        Animal newAnimal = new Animal(this.map, this.getPosition());
-        newAnimal.setGenesBasedOnParents(this, otherAnimal);
-        newAnimal.setEnergy(newAnimalEnergy, moveEnergy);
-        map.spawnNewAnimal(newAnimal);
-    }
-
-    public int getEnergy() {
-        return this.energy;
-    }
-    public List<Integer> getGenes() {
-        return this.genes;
-    }
 
 
 

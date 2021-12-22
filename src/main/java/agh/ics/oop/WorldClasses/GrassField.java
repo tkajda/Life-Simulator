@@ -1,4 +1,8 @@
-package agh.ics.oop;
+package agh.ics.oop.WorldClasses;
+
+import agh.ics.oop.WorldClasses.AbstractWorldMap;
+import agh.ics.oop.WorldClasses.Grass;
+import agh.ics.oop.WorldClasses.Vector2d;
 
 import java.lang.Math;
 import java.util.Random;
@@ -27,7 +31,6 @@ public class GrassField extends AbstractWorldMap {
                 Grass ngrass = new Grass(pos, super.plantEnergy);
 
                 grassFields.put(pos, ngrass);
-                boundedMap.addToMap( ngrass.getPosition(), ngrass);
                 i++;
             }
         }

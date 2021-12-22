@@ -1,5 +1,7 @@
 package agh.ics.oop;
 
+import agh.ics.oop.Console.OptionsParser;
+import agh.ics.oop.Enums.MoveDirection;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

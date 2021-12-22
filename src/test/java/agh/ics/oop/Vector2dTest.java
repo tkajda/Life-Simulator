@@ -2,6 +2,7 @@ package agh.ics.oop;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import agh.ics.oop.WorldClasses.Vector2d;
 import org.junit.jupiter.api.Test;
 
 

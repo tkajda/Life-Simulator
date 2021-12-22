@@ -1,7 +1,6 @@
 package agh.ics.oop.gui;
 
-import agh.ics.oop.IMapElement;
-import javafx.scene.control.Label;
+import agh.ics.oop.Interfaces.IMapElement;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;

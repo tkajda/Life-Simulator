@@ -1,5 +1,8 @@
 package agh.ics.oop;
 
+import agh.ics.oop.Enums.MoveDirection;
+import agh.ics.oop.WorldClasses.Animal;
+import agh.ics.oop.WorldClasses.Vector2d;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -2,6 +2,8 @@ package agh.ics.oop;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import agh.ics.oop.Enums.MoveDirection;
+import agh.ics.oop.WorldClasses.*;
 import org.junit.jupiter.api.Test;
 
 class GrassFieldTest {

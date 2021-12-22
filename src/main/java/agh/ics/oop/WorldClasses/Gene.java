@@ -1,4 +1,6 @@
-package agh.ics.oop;
+package agh.ics.oop.WorldClasses;
+
+import agh.ics.oop.WorldClasses.Animal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,15 +13,35 @@ public class Gene {
     int i = 0;
 
 
-
+    //if animal has no parents/placed on the map at day 0 - gets random genes
     public void setRandomGenes() {
-        Random x = new Random();
+        Random rng = new Random();
         for (int i =0; i< SIZE; i++) {
-            this.genes.add(x.nextInt(8));
+            this.genes.add(rng.nextInt(8));
         }
         Collections.sort(this.genes);
     }
 
+    //animal is born
+    //choose dominant genotype
+    public void setGenes(Animal parent1, Animal parent2) {
+        if (parent1.getEnergy() == parent2.getEnergy()) {
+            for(int i =0; i<SIZE/2;i++) {
+                this.genes.add(parent1.getAnimalGenes().get(i));
+            }
+            for(int i =SIZE/2; i<SIZE;i++){
+                this.genes.add(parent2.getAnimalGenes().get(i));
+            }
+        }
+        else if(parent1.getEnergy()> parent2.getEnergy()) {
+            setGenesBasedOnParents(parent1,parent2);
+        }
+        else {
+            setGenesBasedOnParents(parent2,parent1);
+        }
+    }
+
+    //choose a side for dominant parent and set genes lamenting both parents' genes
     public void setGenesBasedOnParents(Animal parent1, Animal parent2) {
         Random rndGenerator = new Random();
         int side = rndGenerator.nextInt(2);
@@ -45,23 +67,7 @@ public class Gene {
             }
     }
 
-    public void setGenes(Animal parent1, Animal parent2) {
-        if (parent1.energy == parent2.energy) {
-            for(int i =0; i<SIZE/2;i++) {
-                this.genes.add(parent1.getAnimalGenes().get(i));
-            }
-            for(int i =SIZE/2; i<SIZE;i++){
-                this.genes.add(parent2.getAnimalGenes().get(i));
-            }
-        }
-        else if(parent1.energy> parent2.energy) {
-            setGenesBasedOnParents(parent1,parent2);
-        }
-        else {
-            setGenesBasedOnParents(parent2,parent1);
-        }
 
-    }
 
     public List<Integer> getGenes() {
         return this.genes;

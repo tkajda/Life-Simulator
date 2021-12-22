@@ -1,4 +1,4 @@
-package agh.ics.oop;
+package agh.ics.oop.Interfaces;
 
 /**
  * The interface responsible for managing the moves of the animals.

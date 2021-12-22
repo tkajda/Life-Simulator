@@ -2,6 +2,10 @@ package agh.ics.oop;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import agh.ics.oop.Enums.MapDirection;
+import agh.ics.oop.Enums.MoveDirection;
+import agh.ics.oop.WorldClasses.Animal;
+import agh.ics.oop.WorldClasses.Vector2d;
 import org.junit.jupiter.api.Test;
 
 

@@ -1,11 +1,19 @@
-package agh.ics.oop;
+package agh.ics.oop.WorldClasses;
 
 
+
+import agh.ics.oop.Enums.MoveDirection;
+import agh.ics.oop.Interfaces.IEngine;
+import agh.ics.oop.Interfaces.IMapObserver;
+import agh.ics.oop.Interfaces.IPositionChangeObserver;
+import agh.ics.oop.WorldClasses.AbstractWorldMap;
+import agh.ics.oop.WorldClasses.Animal;
+import agh.ics.oop.WorldClasses.Vector2d;
 
 import java.util.*;
 
 
-public class SimulationEngine implements  Runnable, IEngine, IMapObserver,IPositionChangeObserver {
+public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
 
     private final List<Animal> animals = new ArrayList<>();
     private List<MoveDirection> moves;
@@ -14,13 +22,12 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver,IPosit
     private int grassEnergy = 88;
     private int grassSpawnedEachDay = 1;
 
-    public SimulationEngine( AbstractWorldMap map) {
+    //constructor
+    public SimulationEngine( AbstractWorldMap map, int numberOfAnimalsAtStart) {
         this.map = map;
         map.addObserver(this);
-        map.setJungle(0.4);
-
-        map.setJungle(0.4);
-        spawnStartingAnimals(10);
+        map.setJungle();
+        spawnStartingAnimals(numberOfAnimalsAtStart);
     }
 
 
@@ -39,49 +46,20 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver,IPosit
     }
 
 
-
-
-    public void addObserver(IMapObserver observer) {
-        observers.add(observer);
-    }
-
-
     public void setGrassEnergy(int grassEnergy) {
         this.grassEnergy = grassEnergy;
     }
+
 
     public void setMoves(List<MoveDirection> moves) {
         this.moves=moves;
     }
 
 
-    @Override
-    public void run() {
-        System.out.println("its running");
 
-        int i = 0;
-        while(i<200) {
-            for(Animal animal: animals) {
-                animal.moveWithPref();
-            }
-            map.spawnGrassOnSteppe(this.grassSpawnedEachDay);
-            map.eatPlants();
-//            map.removeDeadAnimals();
-
-            this.removeDead();
-
-            i++;
-
-            System.out.println("day" + i);
-            simulateDay();
-        }
-        System.out.println(animals);
-        System.out.println(map);
-
-    }
-
-    public void removeDead() {
-        animals.removeIf(animal -> animal.getEnergy() <= 0);
+    //notice engine observers about
+    public void addObserver(IMapObserver observer) {
+        observers.add(observer);
     }
 
 
@@ -93,7 +71,31 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver,IPosit
 
 
     @Override
-    public void positionChanged(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
+    public void run() {
+        System.out.println("its running");
 
+        int i = 0;
+        while(i<100000) {
+            for(Animal animal: animals) {
+                animal.moveWithPref();
+            }
+            map.spawnGrassOnSteppe(this.grassSpawnedEachDay);
+            map.eatPlants();
+
+//            map.removeDeadAnimals();
+
+            this.removeDead();
+
+            i++;
+            simulateDay();
+
+        }
+        System.out.println("day" + i);
     }
+
+
+    public void removeDead() {
+        animals.removeIf(animal -> animal.getEnergy() <= 0);
+    }
+
 }

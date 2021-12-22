@@ -1,7 +1,9 @@
-package agh.ics.oop;
+package agh.ics.oop.Enums;
 
 
-enum TmpMapDirection {
+import agh.ics.oop.WorldClasses.Vector2d;
+
+public enum MapDirection {
     NORTH,
     NE,
     EAST,
@@ -23,7 +25,7 @@ enum TmpMapDirection {
             case NW -> "Północny-zachód";
         };
     }
-    TmpMapDirection next() {
+    public MapDirection next() {
         return switch(this) {
             case NORTH -> NE;
             case NE -> EAST;
@@ -36,7 +38,7 @@ enum TmpMapDirection {
 
         };
     }
-    TmpMapDirection previous() {
+    public MapDirection previous() {
         return switch(this) {
             case NORTH -> NW;
             case NW -> WEST;
@@ -48,7 +50,7 @@ enum TmpMapDirection {
             case NE -> NORTH;
         };
     }
-    Vector2d toUnitVector() {
+    public Vector2d toUnitVector() {
         return switch(this) {
             case EAST -> new Vector2d(1,0);
             case WEST -> new Vector2d(-1,0);

@@ -1,8 +1,11 @@
 package agh.ics.oop.gui;
 
-import agh.ics.oop.*;
-import agh.ics.oop.AbstractWorldMap;
-import agh.ics.oop.Vector2d;
+import agh.ics.oop.WorldClasses.AbstractWorldMap;
+import agh.ics.oop.Interfaces.IMapElement;
+import agh.ics.oop.Interfaces.IMapObserver;
+import agh.ics.oop.WorldClasses.GrassField;
+import agh.ics.oop.WorldClasses.SimulationEngine;
+import agh.ics.oop.WorldClasses.Vector2d;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
@@ -10,20 +13,18 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class App extends Application implements IMapObserver {
 
     private AbstractWorldMap field;
-    public int moveDelay= 700;
+    public int moveDelay= 0;
     private int mapWidth=20; //placeholder
     private int mapHeight=20; //placeholder
     private Vector2d mapBL =  new Vector2d(0,0);
@@ -37,7 +38,7 @@ public class App extends Application implements IMapObserver {
 
         this.field  = new GrassField(0);
         this.root = new GridPane();
-        this.engine = new SimulationEngine( field);
+        this.engine = new SimulationEngine(field, 20);
         engine.addObserver(this);
 
     }
@@ -59,22 +60,21 @@ public class App extends Application implements IMapObserver {
         Scene scene = new Scene(x, 600, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
-
-
     }
+
 
     public void onEvent() {
         Thread engineThread = new Thread(engine);
         engineThread.start();
     }
 
+
     public void stop() {
         System.exit(0);
     }
 
 
-
-    //setting grid
+    //making new grid based on map
     public void setGrid() {
         int width = mapWidth;
         int height = mapHeight;
@@ -114,7 +114,6 @@ public class App extends Application implements IMapObserver {
 
     }
 
-
     public void addObject(Object o, int col, int row) {
         try {
             IMapElement y = (IMapElement) o;
@@ -134,9 +133,6 @@ public class App extends Application implements IMapObserver {
     }
 
 
-
-
-
     public void addLabel(Label label, int i, int j){
         label.setPrefHeight(60);
         label.setPrefWidth(60);
@@ -149,14 +145,15 @@ public class App extends Application implements IMapObserver {
     }
 
 
+    //app being informed about passing day
     @Override
     public void simulateDay() {
 
         Platform.runLater(() -> {
-            root.setGridLinesVisible(false);
-            root.getChildren().clear();
-            setGrid();
-            root.setGridLinesVisible(true);
+//            root.setGridLinesVisible(false);
+//            root.getChildren().clear();
+////            setGrid();
+//            root.setGridLinesVisible(true);
         });
         try {
             Thread.sleep(moveDelay);

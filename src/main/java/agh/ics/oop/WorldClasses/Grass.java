@@ -1,5 +1,9 @@
-package agh.ics.oop;
+package agh.ics.oop.WorldClasses;
 
+
+import agh.ics.oop.Interfaces.IMapElement;
+import agh.ics.oop.Interfaces.IPositionChangeObserver;
+import agh.ics.oop.WorldClasses.Vector2d;
 
 import java.util.HashSet;
 import java.util.Set;
