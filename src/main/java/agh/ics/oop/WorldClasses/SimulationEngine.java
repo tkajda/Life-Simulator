@@ -22,11 +22,11 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
     private int grassEnergy = 88;
     private int grassSpawnedEachDay = 100;
 
+
     //constructor
     public SimulationEngine( AbstractWorldMap map, int numberOfAnimalsAtStart) {
         this.map = map;
         map.addObserver(this);
-        map.setJungle();
         spawnStartingAnimals(numberOfAnimalsAtStart);
     }
 

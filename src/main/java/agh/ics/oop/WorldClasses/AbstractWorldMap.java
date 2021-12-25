@@ -9,7 +9,7 @@ import agh.ics.oop.Interfaces.IWorldMap;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMapObserver {
+public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMapObserver {
 
 
     //map objects
@@ -19,9 +19,9 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     public ArrayList<Animal> spawnedAnimalsThisDay = new ArrayList<>();
 
     //map properies
-    private final int mapWidth=15; //placeholder
-    private final int mapHeight=15; //placeholder
-    private final double jungleRatio = 0.4; //jungle surface ratio comparing to map surface
+    private int mapWidth=15; //placeholder
+    private int mapHeight=15; //placeholder
+    private double jungleRatio = 0.4; //jungle surface ratio comparing to map surface
     private final Vector2d mapBL =  new Vector2d(0,0);
     private final Vector2d mapTR = new Vector2d (mapWidth-1, mapHeight-1);
     private final Set<IMapObserver> observers = new HashSet<>();
@@ -32,13 +32,24 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
     //animal properties
     private final int moveEnergy=1; //placeholder
-    private final int startEnergy = 10; //placeholder
+    private int startEnergy = 10; //placeholder
     private Vector2d jungleBL;
     private Vector2d jungleTR;
     private int currentlyLivingAnimals = 0;
 
     //properies and methods for map observers
     public int posChangedForNAniamls = 0;
+
+
+    public AbstractWorldMap(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy) {
+        this.mapWidth = MapWidth;
+        this.mapHeight= MapHeight;
+        this.jungleRatio= JungleRatio;
+        this.startEnergy= StartEnergy;
+        this.plantEnergy= PlantEnergy;
+        setJungle();
+    }
+
 
 
     public void addObserver(IMapObserver observer) {
@@ -366,6 +377,8 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     }
 
 
+    @Override
+    public void simulateDay() {
 
-
+    }
 }

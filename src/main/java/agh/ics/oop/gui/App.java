@@ -3,7 +3,6 @@ package agh.ics.oop.gui;
 import agh.ics.oop.WorldClasses.AbstractWorldMap;
 import agh.ics.oop.Interfaces.IMapElement;
 import agh.ics.oop.Interfaces.IMapObserver;
-import agh.ics.oop.WorldClasses.GrassField;
 import agh.ics.oop.WorldClasses.SimulationEngine;
 import agh.ics.oop.WorldClasses.Vector2d;
 import javafx.application.Application;
@@ -21,24 +20,35 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 
-public class App extends Application implements IMapObserver {
+public class App extends Application implements IMapObserver, Runnable {
 
     private AbstractWorldMap field;
     public int moveDelay= 2000;
     private int mapWidth=15; //placeholder
     private int mapHeight=15; //placeholder
+    private double jungleRatio=0.4; //placeholder
+    private int startEnergy=10; //placeholder
+    private int plantEnergy=5;
     private Vector2d mapBL =  new Vector2d(0,0);
     private Vector2d mapTR = new Vector2d (mapWidth-1, mapHeight-1);
 
     SimulationEngine engine;
     GridPane root;
 
+    public void setProperties(int MapHeight, int MapWidth, int JungleRatio, int StartEnergy, int PlantEnergy) {
+        this.mapWidth = MapWidth;
+        this.mapHeight= MapHeight;
+        this.jungleRatio= JungleRatio;
+        this.startEnergy= StartEnergy;
+        this.plantEnergy= PlantEnergy;
+    }
+
 
     public void init() {
 
-        this.field  = new GrassField(0);
+        this.field  = new AbstractWorldMap(this.mapHeight,this.mapWidth,this.jungleRatio,this.startEnergy,this.plantEnergy);
         this.root = new GridPane();
-        this.engine = new SimulationEngine(field, 10);
+        this.engine = new SimulationEngine(field, 20);
         engine.addObserver(this);
 
     }
@@ -161,6 +171,16 @@ public class App extends Application implements IMapObserver {
         catch (InterruptedException ex) {
             System.exit(0);
         }
+
+    }
+
+    @Override
+    public void run() {
+        System.out.println(mapWidth);
+        System.out.println(mapHeight);
+        System.out.println(startEnergy);
+        System.out.println(plantEnergy);
+        System.out.println(jungleRatio);
 
     }
 }

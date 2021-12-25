@@ -1,6 +1,7 @@
 package agh.ics.oop.Console;
 
 import agh.ics.oop.gui.App;
+import agh.ics.oop.gui.Menu;
 import javafx.application.Application;
 
 public class World {
