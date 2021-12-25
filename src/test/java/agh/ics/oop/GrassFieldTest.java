@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class GrassFieldTest {
     @Test
     void testMovement() {
-        AbstractWorldMap map = new GrassField(10);
+        Map map = new GrassField(10);
         Animal animal = new Animal(map, new Vector2d(2, 2));
         Animal animal1 = new Animal(map, new Vector2d(2, 2));
         // test grass <=> scan map before putting animal innit

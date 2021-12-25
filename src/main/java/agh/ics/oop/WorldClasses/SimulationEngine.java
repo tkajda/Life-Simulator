@@ -5,10 +5,6 @@ package agh.ics.oop.WorldClasses;
 import agh.ics.oop.Enums.MoveDirection;
 import agh.ics.oop.Interfaces.IEngine;
 import agh.ics.oop.Interfaces.IMapObserver;
-import agh.ics.oop.Interfaces.IPositionChangeObserver;
-import agh.ics.oop.WorldClasses.AbstractWorldMap;
-import agh.ics.oop.WorldClasses.Animal;
-import agh.ics.oop.WorldClasses.Vector2d;
 
 import java.util.*;
 
@@ -17,7 +13,7 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
 
     private final List<Animal> animals = new ArrayList<>();
     private List<MoveDirection> moves;
-    private final AbstractWorldMap map;
+    private final Map map;
     private final Set<IMapObserver> observers = new HashSet<>();
     private int grassEnergy = 88;
     private int grassSpawnedEachDay = 100;
@@ -25,7 +21,7 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
     private int mapHeight;
 
     //constructor
-    public SimulationEngine( AbstractWorldMap map, int numberOfAnimalsAtStart, int mapWidth, int mapHeight) {
+    public SimulationEngine(Map map, int numberOfAnimalsAtStart, int mapWidth, int mapHeight) {
         this.map = map;
         map.addObserver(this);
         this.mapWidth = mapWidth;
@@ -89,6 +85,10 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
             map.startDay();
             this.removeDead();
             animals.addAll(map.getSpawnedAnimalsThisDay());
+
+            if(animals.size()==0) {
+                break;
+            }
 
             i++;
             simulateDay();

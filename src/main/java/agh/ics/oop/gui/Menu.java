@@ -16,9 +16,9 @@ import static java.lang.Integer.parseInt;
 
 public class Menu extends Application {
     TextField jungleRatio = new TextField("0.2");
-    TextField width = new TextField("15");
+    TextField width = new TextField("20");
     TextField height = new TextField("15");
-    TextField startEnergy = new TextField("10");
+    TextField startEnergy = new TextField("100");
     TextField plantEnergy = new TextField("1");
     TextField moveEnergy = new TextField("1");
     TextField animalsAtStart = new TextField("20");
@@ -26,7 +26,7 @@ public class Menu extends Application {
 
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         Label widthText = new Label("width");
         VBox widthVBox = new VBox(widthText,width);
 
@@ -98,13 +98,13 @@ public class Menu extends Application {
 
 
 
-        Platform.runLater(new Runnable() {
-            public void run() {
+        Platform.runLater(() -> {
+
                 App application = new App();
                 application.setProperties(mapHeight,mapWidth,jungleRat,startE,plantE,moveE, animalsAS);
                 application.init();
                 application.start(new Stage());
-            }
+
         });
     }
 

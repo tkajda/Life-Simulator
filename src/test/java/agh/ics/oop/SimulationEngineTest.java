@@ -18,7 +18,7 @@ public class SimulationEngineTest {
         //test 1 on map1
         String[] args = "f b r l f f r r f f f f f f f f".split(" ");
         List<MoveDirection> directions = OptionsParser.parse(args);
-        AbstractWorldMap map = new GrassField(10);
+        Map map = new GrassField(10);
         Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
         SimulationEngine engine = new SimulationEngine(map, positions);
         engine.setMoves(directions);
@@ -33,7 +33,7 @@ public class SimulationEngineTest {
         //test 1 on map2
         String[] args1 = "f b r l f f r r f f f f f f f f b b b b b b b b b b b b".split(" ");
         List<MoveDirection> directions1 = OptionsParser.parse(args1);
-        AbstractWorldMap map1 = new GrassField(10);
+        Map map1 = new GrassField(10);
         Vector2d[] positions1 = {new Vector2d(2, 2), new Vector2d(3, 4)};
         SimulationEngine engine1 = new SimulationEngine(map1,positions1);
         engine1.setMoves(directions1);

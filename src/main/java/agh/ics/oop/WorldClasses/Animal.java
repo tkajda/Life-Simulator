@@ -9,7 +9,7 @@ import java.util.*;
 public class Animal  implements IMapElement {
 
     //refering to map
-    private final AbstractWorldMap map;
+    private final Map map;
     private MapDirection orient;
     private Vector2d position;
     public int lengthOfLife = 0;
@@ -29,7 +29,7 @@ public class Animal  implements IMapElement {
 
 
     //constructor
-    public Animal(AbstractWorldMap map, Vector2d initialPosition, int startingEnergy) {
+    public Animal(Map map, Vector2d initialPosition, int startingEnergy) {
         this.map = map;
         this.position = initialPosition;
         this.startingEnergy = startingEnergy;

@@ -1,6 +1,6 @@
 package agh.ics.oop.gui;
 
-import agh.ics.oop.WorldClasses.AbstractWorldMap;
+import agh.ics.oop.WorldClasses.Map;
 import agh.ics.oop.Interfaces.IMapElement;
 import agh.ics.oop.Interfaces.IMapObserver;
 import agh.ics.oop.WorldClasses.SimulationEngine;
@@ -22,8 +22,8 @@ import java.util.ArrayList;
 
 public class App extends Application implements IMapObserver, Runnable {
 
-    private AbstractWorldMap field;
-    public int moveDelay= 1000;
+    private Map field;
+    public int moveDelay= 400;
     private int mapWidth; //placeholder
     private int mapHeight; //placeholder
     private double jungleRatio; //placeholder
@@ -49,7 +49,7 @@ public class App extends Application implements IMapObserver, Runnable {
 
     public void init() {
 
-        this.field  = new AbstractWorldMap(this.mapHeight,this.mapWidth,this.jungleRatio,this.startEnergy,this.plantEnergy, this.moveEnergy);
+        this.field  = new Map(this.mapHeight,this.mapWidth,this.jungleRatio,this.startEnergy,this.plantEnergy, this.moveEnergy);
         this.engine = new SimulationEngine(field, animalsAtStart,mapWidth,mapHeight);
         engine.addObserver(this);
         this.root = new GridPane();
@@ -179,11 +179,6 @@ public class App extends Application implements IMapObserver, Runnable {
 
     @Override
     public void run() {
-        System.out.println(mapWidth);
-        System.out.println(mapHeight);
-        System.out.println(startEnergy);
-        System.out.println(plantEnergy);
-        System.out.println(jungleRatio);
 
     }
 }

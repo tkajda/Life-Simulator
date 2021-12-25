@@ -9,12 +9,12 @@ import agh.ics.oop.Interfaces.IWorldMap;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMapObserver {
+public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
 
 
     //map objects
-    protected Map<Vector2d, ArrayList<Animal>> animals = new HashMap<>();
-    protected Map<Vector2d, Grass> grassFields = new HashMap<>();
+    protected java.util.Map<Vector2d, ArrayList<Animal>> animals = new HashMap<>();
+    protected java.util.Map<Vector2d, Grass> grassFields = new HashMap<>();
     private static final Vector2d MARGIN = new Vector2d(1,1);
     public ArrayList<Animal> spawnedAnimalsThisDay = new ArrayList<>();
 
@@ -28,7 +28,7 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
 
     //grass properties
     protected int plantEnergy;
-    public int grassSpawnedEachDay = 10;
+    private static final int grassSpawnedEachDay = 1;
 
     //animal properties
     private final int moveEnergy; //placeholder
@@ -37,11 +37,11 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
     private Vector2d jungleTR;
     private int currentlyLivingAnimals = 0;
 
-    //properies and methods for map observers
+    //properties and methods for map observers
     public int posChangedForNAniamls = 0;
 
 
-    public AbstractWorldMap(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy, int MoveEnergy) {
+    public Map(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy, int MoveEnergy) {
         this.mapWidth = MapWidth;
         this.mapHeight= MapHeight;
         this.jungleRatio= JungleRatio;
@@ -199,14 +199,14 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
         this.jungleTR = new Vector2d(midWidth+Math.floorDiv(jungleWidth, 2), midHeight+Math.floorDiv(jungleHeight, 2));
 
 
-        spawnGrassInTheJungle(jungleBL, jungleTR);
     }
     //MAP SIMULATION----------------------------------------------------------------------------------------------------------------------
     //animals moving in prefered direction
     public void startDay() {
         sortAnimalsByEnergyInTheMorning();
         this.spawnedAnimalsThisDay.clear();
-        this.spawnGrassOnSteppe(this.grassSpawnedEachDay);
+        this.spawnGrassInTheJungle();
+        this.spawnGrassOnSteppe();
         this.eatPlants();
         this.removeDeadAnimals();
         this.copulate();
@@ -291,13 +291,6 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
     }
 
 
-
-
-    public void stopSimulation() {
-        System.exit(0);
-    }
-
-
     public void removeDeadAnimals() {
         ArrayList<Vector2d> positionsToDelete = new ArrayList<>();
         for(ArrayList<Animal> arrayList: animals.values()) {
@@ -316,10 +309,6 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
         for(Vector2d positionToDelete: positionsToDelete) {
             animals.remove(positionToDelete);
         }
-
-        if(animals.isEmpty()) {
-            stopSimulation();
-        }
     }
 
 
@@ -332,7 +321,7 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
 
 
     //spawning new grass on map each day
-    public void spawnGrassOnSteppe(int grassSpawnedEachDay) {
+    public void spawnGrassOnSteppe() {
         int i = 0;
         int tooManyTimes = (int) Math.pow(grassSpawnedEachDay,2);
         int cnt =0;
@@ -351,22 +340,30 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
                     i++;
                 }
             }
-
             cnt++;
-
         }
     }
 
 
-    public void spawnGrassInTheJungle(Vector2d botLeft, Vector2d topRight) {
-//        for(int i =botLeft.x; i<topRight.x;i++) {
-//            for(int j=botLeft.y;j<topRight.y;j++) {
-//                if (!this.isOccupied(new Vector2d(i,j))) {
-//                    Grass newGrass = new Grass(new Vector2d(i,j), this.plantEnergy);
-//                    grassFields.put(new Vector2d(i,j), newGrass);
-//                }
-//            }
-//        }
+    public void spawnGrassInTheJungle() {
+        int i = 0;
+        int tooManyTimes = (int) Math.pow(grassSpawnedEachDay+1,2);
+        int cnt =0;
+
+        Random generator= new Random();
+
+        while(i<tooManyTimes) {
+            Vector2d grassSpawnedPos = new Vector2d(generator.nextInt(this.mapWidth),
+                    generator.nextInt(this.mapHeight));
+            if (!isOccupied(grassSpawnedPos) && !isOccupiedByGrass(grassSpawnedPos)
+                    && grassSpawnedPos.follows(jungleBL) && grassSpawnedPos.precedes(jungleTR)) {
+
+                Grass newGrass = new Grass(grassSpawnedPos,plantEnergy);
+                grassFields.put(grassSpawnedPos,newGrass);
+
+            }
+            i++;
+        }
     }
 
 
