@@ -6,6 +6,7 @@ import agh.ics.oop.Interfaces.IPositionChangeObserver;
 import agh.ics.oop.Interfaces.IMapObserver;
 import agh.ics.oop.Interfaces.IWorldMap;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMapObserver {
@@ -15,21 +16,23 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     protected Map<Vector2d, ArrayList<Animal>> animals = new HashMap<>();
     protected Map<Vector2d, Grass> grassFields = new HashMap<>();
     private static final Vector2d MARGIN = new Vector2d(1,1);
+    public ArrayList<Animal> spawnedAnimalsThisDay = new ArrayList<>();
 
     //map properies
-    private final int mapWidth=20; //placeholder
-    private final int mapHeight=20; //placeholder
+    private final int mapWidth=15; //placeholder
+    private final int mapHeight=15; //placeholder
     private final double jungleRatio = 0.4; //jungle surface ratio comparing to map surface
     private final Vector2d mapBL =  new Vector2d(0,0);
     private final Vector2d mapTR = new Vector2d (mapWidth-1, mapHeight-1);
     private final Set<IMapObserver> observers = new HashSet<>();
 
     //grass properties
-    protected int plantEnergy = 1;
+    protected int plantEnergy = 10;
+    public int grassSpawnedEachDay = 10;
 
-    //animal properies
+    //animal properties
     private final int moveEnergy=1; //placeholder
-    private final int startEnergy = 100; //placeholder
+    private final int startEnergy = 10; //placeholder
     private Vector2d jungleBL;
     private Vector2d jungleTR;
     private int currentlyLivingAnimals = 0;
@@ -56,6 +59,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
     public String toString() {
         MapVisualizer visualizer = new MapVisualizer(this);
+
         return visualizer.draw(mapBL.substract(MARGIN), mapTR.add(MARGIN));
     }
 
@@ -96,7 +100,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
             }
         }
         animal.setRandomGene();
-        animal.setEnergy(startEnergy, moveEnergy);
+        animal.setEnergy(startEnergy,moveEnergy );
         insertToAnimals(animal, animal.getPosition());
         currentlyLivingAnimals++;
 
@@ -115,7 +119,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
             }
         }
         if(isOccupiedByGrass(position)){
-            return this.grassAt(position); }
+            return grassFields.get(position); }
         return null;
     }
 
@@ -127,7 +131,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
     @Override
     public boolean isOccupied(Vector2d position) {
-        return animals.containsKey(position) ;
+        return animals.containsKey(position);
     }
 
 
@@ -184,7 +188,6 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
         int midHeight = (int)mapHeight/2;
         int midWidth = (int)mapWidth/2;
-        System.out.println(Math.floorDiv(jungleWidth, 2));
 
 
         this.jungleBL = new Vector2d(midWidth-Math.floorDiv(jungleWidth-1, 2)-1, midHeight-Math.floorDiv(jungleHeight-1, 2)-1);
@@ -194,50 +197,91 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         spawnGrassInTheJungle(jungleBL, jungleTR);
     }
     //MAP SIMULATION----------------------------------------------------------------------------------------------------------------------
+    //animals moving in prefered direction
+    public void startDay() {
+        this.spawnedAnimalsThisDay.clear();
+        this.spawnGrassOnSteppe(this.grassSpawnedEachDay);
+        this.eatPlants();
+        this.removeDeadAnimals();
+        this.copulate();
+    }
+
+
 
     //checking for animals that can eat each day
     public void eatPlants() {
         for(ArrayList<Animal> arrayList: animals.values()) {
 
             if (isOccupiedByGrass(arrayList.get(0).getPosition())) {
-                int actualHighestEnergy = 0;
-                for (Animal animal : arrayList) {
-                    if (animal.getEnergy() > actualHighestEnergy) {
-                        actualHighestEnergy = animal.getEnergy();
-                    }
+                int i = arrayList.size()-1;
+                int highestEnergy = arrayList.get(i).getEnergy();
+                int cnt = 0;
+
+                while(i>=0 && arrayList.get(i).getEnergy()==highestEnergy) {
+                    cnt++;
+                    i--;
                 }
-                for(Animal animal:arrayList) {
-                    if(animal.getEnergy()==actualHighestEnergy) {
-                        animal.eatGrass(plantEnergy);
-                        grassFields.remove(animal.getPosition());
-                        break;
-                    }
+
+                for(int j= arrayList.size()-1; j >arrayList.size()-1-cnt;j--) {
+                    arrayList.get(j).eatGrass(Math.floorDiv(plantEnergy, cnt));
                 }
+                grassFields.remove(arrayList.get(0).getPosition());
             }
         }
     }
     //copulation is supposed to go here
     //checking for animals that can copulate
+    public ArrayList<Animal> findPossibleParents(ArrayList<Animal> arr) {
+        ArrayList<Animal> res = new ArrayList<>();
+        for(int i = arr.size()-1; i >= 0; i--) {
+            Animal parent = arr.get(i);
+            if (parent.getEnergy()>=0.5* parent.getStartEnergy()) {
+                res.add(parent);
+            }
+            if(res.size() == 2) {
+                return res;
+            }
+        }
+        return null;
+    }
+
+
     public void copulate() {
+
+        for(ArrayList<Animal> arrayList: animals.values()) {
+            if(arrayList.size()>1) {
+                ArrayList<Animal> parents = findPossibleParents(arrayList);
+                if (parents != null) {
+                    spawnNewAnimal(parents.get(0), parents.get(1));
+                }
+            }
+        }
 
     }
 
     public void spawnNewAnimal(Animal parent1, Animal parent2) {
 
-        Animal child = new Animal(this, parent1.getPosition());
-        int childEnergy = (int) ((parent1.getEnergy() /4) + (parent2.getEnergy() /4));
 
-        int parent1EnergyAfter = parent1.getEnergy()/4;
-        int parent2EnergyAfter = parent2.getEnergy()/4;
-        parent1.setEnergy(parent1EnergyAfter, moveEnergy);
-        parent2.setEnergy(parent2EnergyAfter, moveEnergy);
+        int parent1EnergyAfter = (int) Math.ceil(parent1.getEnergy()/4);
+        int parent2EnergyAfter = (int) Math.ceil(parent2.getEnergy()/4);
+        int childEnergy = (int) (parent2EnergyAfter + parent1EnergyAfter);
 
+        parent1.setEnergy(parent1.getEnergy()-parent1EnergyAfter, moveEnergy);
+        parent2.setEnergy(parent2.getEnergy()-parent2EnergyAfter, moveEnergy);
 
+        Animal child = new Animal(this, parent1.getPosition(), childEnergy);
+
+        currentlyLivingAnimals++;
         child.setEnergy(childEnergy, moveEnergy);
         child.setGenesBasedOnParents(parent1, parent2);
-
+        spawnedAnimalsThisDay.add(child);
         animals.get(child.getPosition()).add(child);
         child.addObserver(this);
+    }
+
+    public ArrayList<Animal> getSpawnedAnimalsThisDay() {
+
+        return spawnedAnimalsThisDay;
     }
 
 
@@ -250,60 +294,37 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
     public void removeDeadAnimals() {
         ArrayList<Vector2d> positionsToDelete = new ArrayList<>();
-        Map<Vector2d, ArrayList<Integer>> indexesToDelete = new HashMap<>();
-//        System.out.println(animals);
-        for(ArrayList<Animal> arrayList: animals.values() ) {
-            Integer i = 0;
-            for(Animal animal: arrayList) {
-                if(animal.getEnergy()<=0) {
-                    if(arrayList.size()==1) {
-                        positionsToDelete.add(animal.getPosition());
-                    }
-                    else {
-                        if (indexesToDelete.containsKey(animal.getPosition())) {
-                            ArrayList<Integer> arrOfIndexes = indexesToDelete.get(animal.getPosition());
-                            arrOfIndexes.add(i);
-                        }
-                        else {
-                            ArrayList<Integer> arrOfIndexes = new ArrayList<>();
-                            arrOfIndexes.add(i);
-                            indexesToDelete.put(animal.getPosition(), arrOfIndexes);
-                        }
-                    }
-                    currentlyLivingAnimals--;
-                }
-                i++;
-            }
+        for(ArrayList<Animal> arrayList: animals.values()) {
 
+            Vector2d key = arrayList.get(0).getPosition();
+            int animalsAtPos = arrayList.size();
+
+            arrayList.removeIf(animal -> animal.getEnergy() <= 0);
+
+            currentlyLivingAnimals -= (animalsAtPos-arrayList.size());
+
+            if(arrayList.size()==0) {
+                positionsToDelete.add(key);
+            }
         }
         for(Vector2d positionToDelete: positionsToDelete) {
             animals.remove(positionToDelete);
         }
-        for(ArrayList<Animal> arrayList: animals.values()) {
-            Vector2d somePosition= arrayList.get(0).getPosition();
-            if(indexesToDelete.containsKey(somePosition)) {
-                if(indexesToDelete.get(somePosition).size()==animals.get(somePosition).size()) {
-                    animals.remove(somePosition);
-                }
-                else {
-                    int i = 0;
-                    ArrayList<Animal> tmpToInsert = new ArrayList<>();
-                    for(Integer index: indexesToDelete.get(somePosition)) {
-                        if(index!=i) {
-                            tmpToInsert.add(arrayList.get(i));
-                        }
-                        i++;
-                    }
-                    animals.remove(somePosition);
-                    animals.put(somePosition, tmpToInsert);
-                }
-            }
 
-        }
         if(animals.isEmpty()) {
             stopSimulation();
         }
     }
+
+
+    public void sortAnimalsByEnergyInTheMorning() {
+        System.out.println(currentlyLivingAnimals);
+        for(ArrayList<Animal> arrayList:animals.values()) {
+            arrayList.sort(new EnergyComparator());
+        }
+    }
+
+
 
     //spawning new grass on map each day
     public void spawnGrassOnSteppe(int grassSpawnedEachDay) {
@@ -311,15 +332,16 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         int tooManyTimes = (int) Math.pow(grassSpawnedEachDay,2);
         int cnt =0;
 
-        Random generator= new Random();
+        sortAnimalsByEnergyInTheMorning();
 
+        Random generator= new Random();
         while (i<grassSpawnedEachDay && cnt < tooManyTimes) {
 
-            Vector2d grassSpawnedPos = new Vector2d(generator.nextInt(this.mapWidth),
-                    generator.nextInt(this.mapHeight));
+            Vector2d grassSpawnedPos = new Vector2d(generator.nextInt(this.mapWidth+1),
+                    generator.nextInt(this.mapHeight+1));
 
             if(!this.isOccupied(grassSpawnedPos) && !this.isOccupiedByGrass(grassSpawnedPos)) {
-                if (grassSpawnedPos.x < jungleBL.x || grassSpawnedPos.x > jungleTR.x || grassSpawnedPos.y<jungleBL.y || grassSpawnedPos.y>jungleTR.y) {
+                if (grassSpawnedPos.x < jungleBL.x || grassSpawnedPos.x >= jungleTR.x || grassSpawnedPos.y<jungleBL.y || grassSpawnedPos.y>=jungleTR.y) {
                     Grass ngrass = new Grass(grassSpawnedPos, plantEnergy);
                     grassFields.put(ngrass.getPosition(), ngrass);
                     i++;
@@ -332,19 +354,15 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     }
 
 
-
-
-
     public void spawnGrassInTheJungle(Vector2d botLeft, Vector2d topRight) {
-
-        for(int i =botLeft.x; i<topRight.x;i++) {
-            for(int j=botLeft.y;j<topRight.y;j++) {
-                if (!this.isOccupied(new Vector2d(i,j))) {
-                    Grass newGrass = new Grass(new Vector2d(i,j), this.plantEnergy);
-                    grassFields.put(new Vector2d(i,j), newGrass);
-                }
-            }
-        }
+//        for(int i =botLeft.x; i<topRight.x;i++) {
+//            for(int j=botLeft.y;j<topRight.y;j++) {
+//                if (!this.isOccupied(new Vector2d(i,j))) {
+//                    Grass newGrass = new Grass(new Vector2d(i,j), this.plantEnergy);
+//                    grassFields.put(new Vector2d(i,j), newGrass);
+//                }
+//            }
+//        }
     }
 
 

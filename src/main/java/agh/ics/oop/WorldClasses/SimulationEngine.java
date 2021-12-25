@@ -20,7 +20,7 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
     private final AbstractWorldMap map;
     private final Set<IMapObserver> observers = new HashSet<>();
     private int grassEnergy = 88;
-    private int grassSpawnedEachDay = 1;
+    private int grassSpawnedEachDay = 100;
 
     //constructor
     public SimulationEngine( AbstractWorldMap map, int numberOfAnimalsAtStart) {
@@ -35,9 +35,9 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
         Random rng = new Random();
         int i = 0;
         while(i<numberOfAnimals) {
-            Vector2d animalPosition = new Vector2d(rng.nextInt(20), rng.nextInt(20));
+            Vector2d animalPosition = new Vector2d(rng.nextInt(14), rng.nextInt(14));
             if (!map.isOccupied(animalPosition)) {
-                Animal animal = new Animal(map, animalPosition);
+                Animal animal = new Animal(map, animalPosition, 10);
                 animals.add(animal);
                 map.place(animal);
                 i++;
@@ -72,26 +72,23 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
 
     @Override
     public void run() {
-        System.out.println("its running");
 
         int i = 0;
-        while(i<100000) {
+        while(i<20000) {
             for(Animal animal: animals) {
                 animal.moveWithPref();
             }
-            map.spawnGrassOnSteppe(this.grassSpawnedEachDay);
-            map.eatPlants();
+            System.out.println(animals);
 
-//            map.removeDeadAnimals();
-
+            map.startDay();
             this.removeDead();
+            animals.addAll(map.getSpawnedAnimalsThisDay());
 
             i++;
             simulateDay();
-
+            }
         }
-        System.out.println("day" + i);
-    }
+
 
 
     public void removeDead() {

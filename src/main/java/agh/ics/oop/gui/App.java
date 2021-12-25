@@ -24,9 +24,9 @@ import java.util.ArrayList;
 public class App extends Application implements IMapObserver {
 
     private AbstractWorldMap field;
-    public int moveDelay= 0;
-    private int mapWidth=20; //placeholder
-    private int mapHeight=20; //placeholder
+    public int moveDelay= 2000;
+    private int mapWidth=15; //placeholder
+    private int mapHeight=15; //placeholder
     private Vector2d mapBL =  new Vector2d(0,0);
     private Vector2d mapTR = new Vector2d (mapWidth-1, mapHeight-1);
 
@@ -38,7 +38,7 @@ public class App extends Application implements IMapObserver {
 
         this.field  = new GrassField(0);
         this.root = new GridPane();
-        this.engine = new SimulationEngine(field, 20);
+        this.engine = new SimulationEngine(field, 10);
         engine.addObserver(this);
 
     }
@@ -150,10 +150,10 @@ public class App extends Application implements IMapObserver {
     public void simulateDay() {
 
         Platform.runLater(() -> {
-//            root.setGridLinesVisible(false);
-//            root.getChildren().clear();
-////            setGrid();
-//            root.setGridLinesVisible(true);
+            root.setGridLinesVisible(false);
+            root.getChildren().clear();
+            setGrid();
+            root.setGridLinesVisible(true);
         });
         try {
             Thread.sleep(moveDelay);

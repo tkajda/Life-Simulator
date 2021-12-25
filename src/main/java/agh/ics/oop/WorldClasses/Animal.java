@@ -23,14 +23,15 @@ public class Animal  implements IMapElement {
     //energy
     public int energy;
     public int moveEnergy;
+    public int startingEnergy;
 
 
 
     //constructor
-    public Animal(AbstractWorldMap map, Vector2d initialPosition) {
+    public Animal(AbstractWorldMap map, Vector2d initialPosition, int startingEnergy) {
         this.map = map;
         this.position = initialPosition;
-        this.orient = MapDirection.NORTH;
+        this.startingEnergy = startingEnergy;
 
 
         Random rng= new Random();
@@ -69,6 +70,7 @@ public class Animal  implements IMapElement {
     public int getEnergy() {
         return this.energy;
     }
+    public int getStartEnergy(){return this.startingEnergy;};
     public List<Integer> getGenes() {
         return this.genes;
     }
@@ -180,10 +182,5 @@ public class Animal  implements IMapElement {
         this.gene.setGenes(parent1, parent2);
         this.genes = gene.getGenes();
     }
-
-
-
-
-
 
 }

@@ -39,6 +39,8 @@ public class Gene {
         else {
             setGenesBasedOnParents(parent2,parent1);
         }
+        Collections.sort(this.genes);
+
     }
 
     //choose a side for dominant parent and set genes lamenting both parents' genes
@@ -46,7 +48,11 @@ public class Gene {
         Random rndGenerator = new Random();
         int side = rndGenerator.nextInt(2);
 
-        int proportion = (int) (parent1.energy/parent2.energy)*100;
+        double pEnergy1 = parent1.getEnergy();
+        double pEnergy2 = parent2.getEnergy();
+        double x = (pEnergy2/pEnergy1);
+
+        int proportion = (int) Math.floor(x*SIZE);
 
         if (side == 0) {
             for (int i =0; i<proportion; i++) {
