@@ -1,6 +1,7 @@
 package agh.ics.oop.gui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -9,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
 
@@ -75,17 +77,25 @@ public class Menu extends Application {
         }
 
 
-        int jungleRat = parseInt(jungleRatio.getText());
+        double jungleRat = parseDouble(jungleRatio.getText());
+        if(jungleRat>=1 || jungleRat<=0) {
+            throw new IllegalArgumentException();
+        }
         int mapWidth = parseInt(width.getText());
         int mapHeight = parseInt(height.getText());
         int startE = parseInt(startEnergy.getText());
         int plantE = parseInt(plantEnergy.getText());
 
 
-        App application = new App();
-        application.setProperties(mapHeight,mapWidth,jungleRat,startE,plantE);
-        Thread appThread = new Thread(application);
-        appThread.start();
+
+        Platform.runLater(new Runnable() {
+            public void run() {
+                App application = new App();
+                application.init();
+                application.setProperties(mapHeight,mapWidth,jungleRat,startE,plantE);
+                application.start(new Stage());
+            }
+        });
     }
 
 

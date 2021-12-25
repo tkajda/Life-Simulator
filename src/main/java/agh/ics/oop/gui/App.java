@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class App extends Application implements IMapObserver, Runnable {
 
     private AbstractWorldMap field;
-    public int moveDelay= 2000;
+    public int moveDelay= 300;
     private int mapWidth=15; //placeholder
     private int mapHeight=15; //placeholder
     private double jungleRatio=0.4; //placeholder
@@ -31,11 +31,11 @@ public class App extends Application implements IMapObserver, Runnable {
     private int plantEnergy=5;
     private Vector2d mapBL =  new Vector2d(0,0);
     private Vector2d mapTR = new Vector2d (mapWidth-1, mapHeight-1);
-
+    GridPane root = new GridPane();
     SimulationEngine engine;
-    GridPane root;
 
-    public void setProperties(int MapHeight, int MapWidth, int JungleRatio, int StartEnergy, int PlantEnergy) {
+
+    public void setProperties(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy) {
         this.mapWidth = MapWidth;
         this.mapHeight= MapHeight;
         this.jungleRatio= JungleRatio;
@@ -47,9 +47,9 @@ public class App extends Application implements IMapObserver, Runnable {
     public void init() {
 
         this.field  = new AbstractWorldMap(this.mapHeight,this.mapWidth,this.jungleRatio,this.startEnergy,this.plantEnergy);
-        this.root = new GridPane();
         this.engine = new SimulationEngine(field, 20);
         engine.addObserver(this);
+        System.out.println("aaa");
 
     }
 
