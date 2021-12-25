@@ -15,13 +15,13 @@ import static java.lang.Integer.parseInt;
 
 
 public class Menu extends Application {
-    TextField jungleRatio = new TextField();
-    TextField width = new TextField();
-    TextField height = new TextField();
-    TextField startEnergy = new TextField();
-    TextField plantEnergy = new TextField();
-
-
+    TextField jungleRatio = new TextField("0.2");
+    TextField width = new TextField("15");
+    TextField height = new TextField("15");
+    TextField startEnergy = new TextField("10");
+    TextField plantEnergy = new TextField("1");
+    TextField moveEnergy = new TextField("1");
+    TextField animalsAtStart = new TextField("20");
 
 
 
@@ -41,6 +41,13 @@ public class Menu extends Application {
 
         Label jungleRatioText = new Label("Jungle ratio:");
         VBox jungleRatioVBox= new VBox(jungleRatioText, jungleRatio);
+
+        Label animalsAtStartText = new Label("Animals at start:");
+        VBox animalsAtStartVBox = new VBox(animalsAtStartText, animalsAtStart);
+
+        Label moveEnergyText = new Label("Move Energy:");
+        VBox moveEnergyVBox = new VBox(moveEnergyText,moveEnergy);
+
         Button move = new Button("Start");
 
         try {
@@ -56,7 +63,8 @@ public class Menu extends Application {
 
 
 
-        VBox x = new VBox(widthVBox, heightVBox,  startEnergyVBox, plantEnergyVBox, jungleRatioVBox, move);
+        VBox x = new VBox(widthVBox, heightVBox,  startEnergyVBox, plantEnergyVBox, jungleRatioVBox,
+                moveEnergyVBox, animalsAtStartVBox,move);
 
         Scene scene = new Scene(x,600, 600);
         x.setSpacing(15);
@@ -85,14 +93,16 @@ public class Menu extends Application {
         int mapHeight = parseInt(height.getText());
         int startE = parseInt(startEnergy.getText());
         int plantE = parseInt(plantEnergy.getText());
+        int animalsAS = parseInt(animalsAtStart.getText());
+        int moveE = parseInt(moveEnergy.getText());
 
 
 
         Platform.runLater(new Runnable() {
             public void run() {
                 App application = new App();
+                application.setProperties(mapHeight,mapWidth,jungleRat,startE,plantE,moveE, animalsAS);
                 application.init();
-                application.setProperties(mapHeight,mapWidth,jungleRat,startE,plantE);
                 application.start(new Stage());
             }
         });

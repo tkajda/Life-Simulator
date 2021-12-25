@@ -19,20 +19,20 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
     public ArrayList<Animal> spawnedAnimalsThisDay = new ArrayList<>();
 
     //map properies
-    private int mapWidth=15; //placeholder
-    private int mapHeight=15; //placeholder
-    private double jungleRatio = 0.4; //jungle surface ratio comparing to map surface
+    private final int mapWidth; //placeholder
+    private final int mapHeight; //placeholder
+    private final double jungleRatio; //jungle surface ratio comparing to map surface
     private final Vector2d mapBL =  new Vector2d(0,0);
-    private final Vector2d mapTR = new Vector2d (mapWidth-1, mapHeight-1);
+    private final Vector2d mapTR;
     private final Set<IMapObserver> observers = new HashSet<>();
 
     //grass properties
-    protected int plantEnergy = 10;
+    protected int plantEnergy;
     public int grassSpawnedEachDay = 10;
 
     //animal properties
-    private final int moveEnergy=1; //placeholder
-    private int startEnergy = 10; //placeholder
+    private final int moveEnergy; //placeholder
+    private final int startEnergy; //placeholder
     private Vector2d jungleBL;
     private Vector2d jungleTR;
     private int currentlyLivingAnimals = 0;
@@ -41,12 +41,14 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
     public int posChangedForNAniamls = 0;
 
 
-    public AbstractWorldMap(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy) {
+    public AbstractWorldMap(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy, int MoveEnergy) {
         this.mapWidth = MapWidth;
         this.mapHeight= MapHeight;
         this.jungleRatio= JungleRatio;
         this.startEnergy= StartEnergy;
         this.plantEnergy= PlantEnergy;
+        this.mapTR = new Vector2d(mapWidth-1, mapHeight-1);
+        this.moveEnergy = MoveEnergy;
         setJungle();
     }
 
@@ -56,13 +58,6 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
         observers.add(observer);
     }
 
-    public void allMoved() {
-        for (IMapObserver obeserver: observers) {
-            obeserver.simulateDay();
-        }
-        posChangedForNAniamls=0;
-
-    }
 
     public int getNumOfCurLivingAnimals() {
         return currentlyLivingAnimals;
@@ -95,7 +90,7 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
             }
         }
         if (currentlyLivingAnimals==posChangedForNAniamls) {
-            allMoved();
+            simulateDay();
         }
     }
 
@@ -181,10 +176,9 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
                 }
             }
         }
-        int[] arr = {indexI, indexJ};
 
 
-        return arr;
+        return new int[]{indexI, indexJ};
     }
 
 
@@ -210,6 +204,7 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
     //MAP SIMULATION----------------------------------------------------------------------------------------------------------------------
     //animals moving in prefered direction
     public void startDay() {
+        sortAnimalsByEnergyInTheMorning();
         this.spawnedAnimalsThisDay.clear();
         this.spawnGrassOnSteppe(this.grassSpawnedEachDay);
         this.eatPlants();
@@ -329,7 +324,6 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
 
 
     public void sortAnimalsByEnergyInTheMorning() {
-        System.out.println(currentlyLivingAnimals);
         for(ArrayList<Animal> arrayList:animals.values()) {
             arrayList.sort(new EnergyComparator());
         }
@@ -343,13 +337,12 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
         int tooManyTimes = (int) Math.pow(grassSpawnedEachDay,2);
         int cnt =0;
 
-        sortAnimalsByEnergyInTheMorning();
 
         Random generator= new Random();
         while (i<grassSpawnedEachDay && cnt < tooManyTimes) {
 
-            Vector2d grassSpawnedPos = new Vector2d(generator.nextInt(this.mapWidth+1),
-                    generator.nextInt(this.mapHeight+1));
+            Vector2d grassSpawnedPos = new Vector2d(generator.nextInt(this.mapWidth),
+                    generator.nextInt(this.mapHeight));
 
             if(!this.isOccupied(grassSpawnedPos) && !this.isOccupiedByGrass(grassSpawnedPos)) {
                 if (grassSpawnedPos.x < jungleBL.x || grassSpawnedPos.x >= jungleTR.x || grassSpawnedPos.y<jungleBL.y || grassSpawnedPos.y>=jungleTR.y) {
@@ -379,6 +372,9 @@ public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver, IMa
 
     @Override
     public void simulateDay() {
-
+        for (IMapObserver observer: observers) {
+            observer.simulateDay();
+        }
+        posChangedForNAniamls=0;
     }
 }

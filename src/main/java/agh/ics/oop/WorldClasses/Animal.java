@@ -12,6 +12,7 @@ public class Animal  implements IMapElement {
     private final AbstractWorldMap map;
     private MapDirection orient;
     private Vector2d position;
+    public int lengthOfLife = 0;
 
     //observers
     private final Set<IPositionChangeObserver> observers = new HashSet<>();
@@ -126,6 +127,7 @@ public class Animal  implements IMapElement {
     //MoveDirection includes 8 directions now(6 are just rotations of animal)
     public void moveWithPref() {
 
+        this.lengthOfLife++;
         Random rng = new Random();
         this.energy-=this.moveEnergy;
 
@@ -144,14 +146,12 @@ public class Animal  implements IMapElement {
 
     //make a move forward or backwards
     public void move(MoveDirection direction)  {
-
         Vector2d newPos = this.getPosition();
 
             switch(direction) {
             case FORWARD -> newPos=this.position.add(this.orient.toUnitVector());
             case BACKWARD -> newPos=this.position.add(this.orient.toUnitVector().opposite());
         }
-
         if (map.canMoveTo(newPos) || newPos.equals(this.getPosition())) {
             positionChanged(this.position, newPos);
             this.position = newPos;

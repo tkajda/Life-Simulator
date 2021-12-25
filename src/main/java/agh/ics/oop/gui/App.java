@@ -23,33 +23,36 @@ import java.util.ArrayList;
 public class App extends Application implements IMapObserver, Runnable {
 
     private AbstractWorldMap field;
-    public int moveDelay= 300;
-    private int mapWidth=15; //placeholder
-    private int mapHeight=15; //placeholder
-    private double jungleRatio=0.4; //placeholder
-    private int startEnergy=10; //placeholder
-    private int plantEnergy=5;
+    public int moveDelay= 1000;
+    private int mapWidth; //placeholder
+    private int mapHeight; //placeholder
+    private double jungleRatio; //placeholder
+    private int startEnergy; //placeholder
+    private int plantEnergy;
+    private int moveEnergy;
+    private int animalsAtStart;
     private Vector2d mapBL =  new Vector2d(0,0);
     private Vector2d mapTR = new Vector2d (mapWidth-1, mapHeight-1);
-    GridPane root = new GridPane();
     SimulationEngine engine;
+    GridPane root;
 
-
-    public void setProperties(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy) {
+    public void setProperties(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy,int moveEnergy, int animalsAtStart) {
         this.mapWidth = MapWidth;
         this.mapHeight= MapHeight;
         this.jungleRatio= JungleRatio;
         this.startEnergy= StartEnergy;
         this.plantEnergy= PlantEnergy;
+        this.moveEnergy = moveEnergy;
+        this.animalsAtStart = animalsAtStart;
     }
 
 
     public void init() {
 
-        this.field  = new AbstractWorldMap(this.mapHeight,this.mapWidth,this.jungleRatio,this.startEnergy,this.plantEnergy);
-        this.engine = new SimulationEngine(field, 20);
+        this.field  = new AbstractWorldMap(this.mapHeight,this.mapWidth,this.jungleRatio,this.startEnergy,this.plantEnergy, this.moveEnergy);
+        this.engine = new SimulationEngine(field, animalsAtStart,mapWidth,mapHeight);
         engine.addObserver(this);
-        System.out.println("aaa");
+        this.root = new GridPane();
 
     }
 

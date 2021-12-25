@@ -21,21 +21,26 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
     private final Set<IMapObserver> observers = new HashSet<>();
     private int grassEnergy = 88;
     private int grassSpawnedEachDay = 100;
-
+    private int mapWidth;
+    private int mapHeight;
 
     //constructor
-    public SimulationEngine( AbstractWorldMap map, int numberOfAnimalsAtStart) {
+    public SimulationEngine( AbstractWorldMap map, int numberOfAnimalsAtStart, int mapWidth, int mapHeight) {
         this.map = map;
         map.addObserver(this);
+        this.mapWidth = mapWidth;
+        this.mapHeight = mapHeight;
         spawnStartingAnimals(numberOfAnimalsAtStart);
+
     }
 
 
     public void spawnStartingAnimals(int numberOfAnimals) {
         Random rng = new Random();
         int i = 0;
+
         while(i<numberOfAnimals) {
-            Vector2d animalPosition = new Vector2d(rng.nextInt(14), rng.nextInt(14));
+            Vector2d animalPosition = new Vector2d(rng.nextInt(mapWidth-1), rng.nextInt(mapHeight-1));
             if (!map.isOccupied(animalPosition)) {
                 Animal animal = new Animal(map, animalPosition, 10);
                 animals.add(animal);
@@ -75,10 +80,11 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
 
         int i = 0;
         while(i<20000) {
+
             for(Animal animal: animals) {
                 animal.moveWithPref();
             }
-            System.out.println(animals);
+
 
             map.startDay();
             this.removeDead();
