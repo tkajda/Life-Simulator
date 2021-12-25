@@ -183,7 +183,6 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
 
 
     public void setJungle() {
-//        int jungleHeight = (int) ((this.mapHeight-1)*jungleRatio);
         int surface = mapHeight*mapWidth;
 
 
@@ -191,15 +190,21 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
         int jungleWidth = whArr[0];
         int jungleHeight = whArr[1];
 
-        int midHeight = (int)mapHeight/2;
-        int midWidth = (int)mapWidth/2;
+        int midHeight = mapHeight/2;
+        int midWidth = mapWidth/2;
 
 
         this.jungleBL = new Vector2d(midWidth-Math.floorDiv(jungleWidth-1, 2)-1, midHeight-Math.floorDiv(jungleHeight-1, 2)-1);
         this.jungleTR = new Vector2d(midWidth+Math.floorDiv(jungleWidth, 2), midHeight+Math.floorDiv(jungleHeight, 2));
 
-
     }
+    public Vector2d getJungleBL() {
+        return jungleBL;
+    }
+    public Vector2d getJungleTR() {
+        return jungleTR;
+    }
+
     //MAP SIMULATION----------------------------------------------------------------------------------------------------------------------
     //animals moving in prefered direction
     public void startDay() {

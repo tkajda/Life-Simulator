@@ -12,13 +12,10 @@ import java.util.*;
 public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
 
     private final List<Animal> animals = new ArrayList<>();
-    private List<MoveDirection> moves;
     private final Map map;
     private final Set<IMapObserver> observers = new HashSet<>();
-    private int grassEnergy = 88;
-    private int grassSpawnedEachDay = 100;
-    private int mapWidth;
-    private int mapHeight;
+    private final int mapWidth;
+    private final int mapHeight;
 
     //constructor
     public SimulationEngine(Map map, int numberOfAnimalsAtStart, int mapWidth, int mapHeight) {
@@ -47,17 +44,6 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
     }
 
 
-    public void setGrassEnergy(int grassEnergy) {
-        this.grassEnergy = grassEnergy;
-    }
-
-
-    public void setMoves(List<MoveDirection> moves) {
-        this.moves=moves;
-    }
-
-
-
     //notice engine observers about
     public void addObserver(IMapObserver observer) {
         observers.add(observer);
@@ -75,24 +61,23 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
     public void run() {
 
         int i = 0;
-        while(i<20000) {
+        System.out.println("silmulation has started!");
+
+        while(animals.size()>0) {
 
             for(Animal animal: animals) {
                 animal.moveWithPref();
             }
 
-
             map.startDay();
             this.removeDead();
             animals.addAll(map.getSpawnedAnimalsThisDay());
-
-            if(animals.size()==0) {
-                break;
-            }
-
             i++;
+            System.out.println(map.getNumOfCurLivingAnimals());
             simulateDay();
             }
+
+        System.out.println("days passed" + i);
         }
 
 
