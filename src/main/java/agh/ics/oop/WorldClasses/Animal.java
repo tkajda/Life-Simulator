@@ -154,7 +154,12 @@ public class Animal  implements IMapElement {
         }
         if (map.canMoveTo(newPos) || newPos.equals(this.getPosition())) {
             positionChanged(this.position, newPos);
-            this.position = newPos;
+            if(map instanceof BorderlessMap) {
+                this.position= ((BorderlessMap) map).calculateNewPosition(this.getPosition(),newPos,this);
+            }
+            else {
+                this.position = newPos;
+            }
         }
     }
 

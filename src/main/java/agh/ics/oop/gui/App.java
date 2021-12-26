@@ -1,11 +1,8 @@
 package agh.ics.oop.gui;
 
-import agh.ics.oop.WorldClasses.Animal;
-import agh.ics.oop.WorldClasses.Map;
+import agh.ics.oop.WorldClasses.*;
 import agh.ics.oop.Interfaces.IMapElement;
 import agh.ics.oop.Interfaces.IMapObserver;
-import agh.ics.oop.WorldClasses.SimulationEngine;
-import agh.ics.oop.WorldClasses.Vector2d;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
@@ -25,7 +22,8 @@ import java.util.ArrayList;
 public class App extends Application implements IMapObserver, Runnable {
 
     private Map field;
-    public int moveDelay= 200;
+    private BorderlessMap borderlessMap;
+    public int moveDelay= 500;
     private int mapWidth;
     private int mapHeight;
     private double jungleRatio;
@@ -37,33 +35,44 @@ public class App extends Application implements IMapObserver, Runnable {
     private Vector2d jungleTR;
     private Vector2d mapBL =  new Vector2d(0,0);
     private Vector2d mapTR = new Vector2d (mapWidth-1, mapHeight-1);
-    SimulationEngine engine;
-    GridPane root;
-    GridPane stats;
-    Thread engineThread;
+    private GridPane root;
+    private GridPane stats;
     private static int APPSIZE=600;
     private static int RGBSIZE=255;
 
+    private SimulationEngine engine;
+    private Thread engineThread;
 
-    public void setProperties(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy,int moveEnergy, int animalsAtStart) {
+
+
+    public void setProperties(Map map, int MapHeight, int MapWidth, double JungleRatio, int StartEnergy,
+                              int PlantEnergy,int moveEnergy, int animalsAtStart) {
+
+        this.field = map;
+
         this.mapWidth = MapWidth;
         this.mapHeight= MapHeight;
+
         this.jungleRatio= JungleRatio;
         this.startEnergy= StartEnergy;
+
         this.plantEnergy= PlantEnergy;
         this.moveEnergy = moveEnergy;
+
         this.animalsAtStart = animalsAtStart;
     }
 
 
     public void init() {
 
-        this.field  = new Map(this.mapHeight,this.mapWidth,this.jungleRatio,this.startEnergy,this.plantEnergy, this.moveEnergy);
-        this.engine = new SimulationEngine(this.field, this.animalsAtStart,this.mapWidth,this.mapHeight);
-        engine.addObserver(this);
         this.root = new GridPane();
         this.jungleBL = field.getJungleBL();
         this.jungleTR = field.getJungleTR();
+
+        this.engine = new SimulationEngine(this.field, this.animalsAtStart,this.mapWidth,this.mapHeight);
+        engine.addObserver(this);
+        this.engineThread = new Thread(engine);
+        engineThread.start();
     }
 
     @Override
@@ -77,7 +86,6 @@ public class App extends Application implements IMapObserver, Runnable {
         hbButtons.setSpacing(10.0);
         hbButtons.setAlignment(Pos.BOTTOM_CENTER);
         hbButtons.getChildren().addAll(move,stop);
-
         move.setOnAction( event -> {
             onEvent();
         });

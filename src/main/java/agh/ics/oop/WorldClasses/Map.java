@@ -19,8 +19,8 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
     public ArrayList<Animal> spawnedAnimalsThisDay = new ArrayList<>();
 
     //map properies
-    private final int mapWidth; //placeholder
-    private final int mapHeight; //placeholder
+    protected final int mapWidth; //placeholder
+    protected final int mapHeight; //placeholder
     private final double jungleRatio; //jungle surface ratio comparing to map surface
     private final Vector2d mapBL =  new Vector2d(0,0);
     private final Vector2d mapTR;
@@ -35,10 +35,10 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
     private final int startEnergy; //placeholder
     private Vector2d jungleBL;
     private Vector2d jungleTR;
-    private int currentlyLivingAnimals = 0;
+    protected int currentlyLivingAnimals = 0;
 
     //properties and methods for map observers
-    public int posChangedForNAniamls = 0;
+    protected int posChangedForNAniamls = 0;
 
 
     public Map(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy, int MoveEnergy) {
@@ -69,27 +69,28 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
         return visualizer.draw(mapBL.substract(MARGIN), mapTR.add(MARGIN));
     }
 
+    public void removeAnimal(Vector2d oldPosition, Animal animal) {
+        for (Animal animal1: animals.get(oldPosition)) {
+
+            if (animal1.equals(animal)) {
+                animals.get(oldPosition).remove(animal);
+                if (animals.get(oldPosition).size() == 0) {
+                    animals.remove(oldPosition);
+                }
+                break;
+            }
+        }
+    }
 
 
     //informs map that animal has changed its position
-    @Override
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
         posChangedForNAniamls++;
         if (!oldPosition.equals(newPosition)) {
             if(animals.get(oldPosition)!=null){
-
-            for (Animal animal1: animals.get(oldPosition)) {
-
-                if (animal1.equals(animal)) {
-                    animals.get(oldPosition).remove(animal);
-
-                    if (animals.get(oldPosition).size() == 0) {
-                        animals.remove(oldPosition);
-                    }
-                    insertToAnimals(animal, newPosition);
-                    break;
-                }
-            }}
+            removeAnimal(oldPosition,animal);
+            insertToAnimals(animal, newPosition);
+            }
         }
         if (currentlyLivingAnimals==posChangedForNAniamls) {
             simulateDay();
@@ -194,15 +195,10 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
 
         int midHeight = mapHeight/2;
         int midWidth = mapWidth/2;
-        System.out.println(midHeight + " " + midWidth);
-        System.out.println(jungleHeight + " " + jungleWidth);
 
 
         this.jungleBL = new Vector2d(midWidth-Math.floorDiv(jungleWidth-1, 2), midHeight-Math.floorDiv(jungleHeight-1, 2));
         this.jungleTR = new Vector2d(midWidth+Math.floorDiv(jungleWidth, 2), midHeight+Math.floorDiv(jungleHeight, 2));
-
-        System.out.println(jungleBL + " " + jungleTR);
-
     }
     public Vector2d getJungleBL() {
         return jungleBL;
@@ -264,7 +260,6 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
 
 
     public void copulate() {
-
         for(ArrayList<Animal> arrayList: animals.values()) {
             if(arrayList.size()>1) {
                 ArrayList<Animal> parents = findPossibleParents(arrayList);

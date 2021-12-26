@@ -26,6 +26,14 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
         spawnStartingAnimals(numberOfAnimalsAtStart);
 
     }
+    public SimulationEngine(BorderlessMap borderlessMap, int numberOfAnimalsAtStart,int mapWidth, int mapHeight) {
+        this.map = borderlessMap;
+        map.addObserver(this);
+        this.mapWidth = mapWidth;
+        this.mapHeight = mapHeight;
+        spawnStartingAnimals(numberOfAnimalsAtStart);
+        System.out.println(animals);
+    }
 
 
     public void spawnStartingAnimals(int numberOfAnimals) {
@@ -68,7 +76,6 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
             for(Animal animal: animals) {
                 animal.moveWithPref();
             }
-
             map.startDay();
             this.removeDead();
             animals.addAll(map.getSpawnedAnimalsThisDay());
