@@ -76,18 +76,20 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
         posChangedForNAniamls++;
         if (!oldPosition.equals(newPosition)) {
+            if(animals.get(oldPosition)!=null){
+
             for (Animal animal1: animals.get(oldPosition)) {
 
                 if (animal1.equals(animal)) {
                     animals.get(oldPosition).remove(animal);
 
-                    if(animals.get(oldPosition).size()==0) {
+                    if (animals.get(oldPosition).size() == 0) {
                         animals.remove(oldPosition);
                     }
                     insertToAnimals(animal, newPosition);
                     break;
                 }
-            }
+            }}
         }
         if (currentlyLivingAnimals==posChangedForNAniamls) {
             simulateDay();
@@ -169,7 +171,7 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
         double best = Integer.MAX_VALUE;
         for (int i = 1; i< width; i++) {
             for(int j =1;j<height;j++) {
-                if (Math.abs((double)i*j/surface-jungleRatio)<best) {
+                if (Math.abs((double)i*j/surface-jungleRatio)<=best) {
                     best = Math.abs((double)i*j/surface-jungleRatio);
                     indexI=i;
                     indexJ=j;
@@ -192,10 +194,14 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
 
         int midHeight = mapHeight/2;
         int midWidth = mapWidth/2;
+        System.out.println(midHeight + " " + midWidth);
+        System.out.println(jungleHeight + " " + jungleWidth);
 
 
-        this.jungleBL = new Vector2d(midWidth-Math.floorDiv(jungleWidth-1, 2)-1, midHeight-Math.floorDiv(jungleHeight-1, 2)-1);
+        this.jungleBL = new Vector2d(midWidth-Math.floorDiv(jungleWidth-1, 2), midHeight-Math.floorDiv(jungleHeight-1, 2));
         this.jungleTR = new Vector2d(midWidth+Math.floorDiv(jungleWidth, 2), midHeight+Math.floorDiv(jungleHeight, 2));
+
+        System.out.println(jungleBL + " " + jungleTR);
 
     }
     public Vector2d getJungleBL() {
@@ -291,7 +297,6 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
     }
 
     public ArrayList<Animal> getSpawnedAnimalsThisDay() {
-
         return spawnedAnimalsThisDay;
     }
 
@@ -353,7 +358,6 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
     public void spawnGrassInTheJungle() {
         int i = 0;
         int tooManyTimes = (int) Math.pow(grassSpawnedEachDay+1,2);
-        int cnt =0;
 
         Random generator= new Random();
 
@@ -365,7 +369,7 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
 
                 Grass newGrass = new Grass(grassSpawnedPos,plantEnergy);
                 grassFields.put(grassSpawnedPos,newGrass);
-
+                break;
             }
             i++;
         }

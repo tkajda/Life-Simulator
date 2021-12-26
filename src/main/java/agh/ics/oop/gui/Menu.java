@@ -16,12 +16,12 @@ import static java.lang.Integer.parseInt;
 
 public class Menu extends Application {
     TextField jungleRatio = new TextField("0.2");
-    TextField width = new TextField("20");
-    TextField height = new TextField("15");
-    TextField startEnergy = new TextField("100");
-    TextField plantEnergy = new TextField("1");
+    TextField width = new TextField("25");
+    TextField height = new TextField("25");
+    TextField startEnergy = new TextField("255");
+    TextField plantEnergy = new TextField("20");
     TextField moveEnergy = new TextField("1");
-    TextField animalsAtStart = new TextField("20");
+    TextField animalsAtStart = new TextField("70");
 
 
 

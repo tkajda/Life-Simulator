@@ -21,11 +21,11 @@ public class Vector2d {
         return Objects.hash(this.x, this.y);
     }
 
-    boolean precedes(Vector2d other) {
+    public boolean precedes(Vector2d other) {
         return this.x <= other.x && this.y <= other.y;
     }
 
-    boolean follows(Vector2d other) {
+    public boolean follows(Vector2d other) {
         return this.x >= other.x && this.y >= other.y;
     }
 
