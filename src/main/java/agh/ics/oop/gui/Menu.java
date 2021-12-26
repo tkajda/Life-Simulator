@@ -28,10 +28,10 @@ public class Menu extends Application {
     TextField plantEnergy = new TextField("20");
     TextField moveEnergy = new TextField("1");
     TextField animalsAtStart = new TextField("70");
-    TextField isMagic = new TextField("N");
+    TextField isMagic = new TextField("false");
 
     TextField[] textFieldsMap = {width,height,startEnergy,plantEnergy,jungleRatio
-            ,animalsAtStart,moveEnergy};
+            ,animalsAtStart,moveEnergy,isMagic};
 
 
     //bordeless map
@@ -41,11 +41,11 @@ public class Menu extends Application {
     TextField startEnergyBM = new TextField("100");
     TextField plantEnergyBM = new TextField("10");
     TextField moveEnergyBM = new TextField("3");
-    TextField animalsAtStartBM = new TextField("900");
-    TextField isMagicBM = new TextField("N");
+    TextField animalsAtStartBM = new TextField("90");
+    TextField isMagicBM = new TextField("false");
 
     TextField[] textFieldsBMap = {widthBM,heightBM,startEnergyBM,plantEnergyBM,
-            jungleRatioBM,animalsAtStartBM,moveEnergyBM};
+            jungleRatioBM,animalsAtStartBM,moveEnergyBM,isMagicBM};
 
     public VBox generateVbox(TextField[] names){
         int i = 0;
@@ -69,9 +69,12 @@ public class Menu extends Application {
         i++;
         Label moveEnergyText = new Label("Move Energy:");
         VBox moveEnergyVBox = new VBox(moveEnergyText,names[i]);
+        i++;
+        Label isMagicText = new Label("Add Magic(true/yes/tak/0)");
+        VBox isMagicVBox = new VBox(isMagicText,names[i]);
 
         VBox vBox = new VBox(widthVBox, heightVBox,  startEnergyVBox, plantEnergyVBox, jungleRatioVBox,
-                moveEnergyVBox, animalsAtStartVBox);
+                moveEnergyVBox, animalsAtStartVBox, isMagicVBox);
         return vBox;
     }
 
@@ -122,7 +125,6 @@ public class Menu extends Application {
     }
 
     public boolean checkData(TextField[] names) {
-        System.out.println(names[0].getText());
         return (names[0].getText().matches("[a-zA-Z]+") || names[1].getText().matches("[a-zA-Z]+")
                 || names[2].getText().matches("[a-zA-Z]+") || names[3].getText().matches("[a-zA-Z]+") ||
                 names[4].getText().matches("[a-zA-Z]+"));
@@ -146,7 +148,12 @@ public class Menu extends Application {
         int animalsAS = parseInt(animalsAtStart.getText());
         int moveE = parseInt(moveEnergy.getText());
 
-        Map map = new Map(mapHeight,mapWidth,jungleRat,startE,plantE, moveE);
+        boolean mapIsMagic = isMagic.getText().matches("yes") ||
+                isMagic.getText().matches("true") ||
+                isMagic.getText().matches("tak") ||
+                isMagic.getText().matches("0");
+
+        Map map = new Map(mapHeight,mapWidth,jungleRat,startE,plantE, moveE,mapIsMagic);
 
         App application = new App();
         application.setProperties(map, mapHeight,mapWidth,jungleRat,startE,plantE,moveE, animalsAS);
@@ -177,7 +184,13 @@ public class Menu extends Application {
         int animalsAS = parseInt(animalsAtStartBM.getText());
         int moveE = parseInt(moveEnergyBM.getText());
 
-        BorderlessMap map = new BorderlessMap(mapHeight,mapWidth,jungleRat,startE,plantE, moveE);
+        boolean mapIsMagic = isMagicBM.getText().matches("yes") ||
+                isMagicBM.getText().matches("true") ||
+                isMagicBM.getText().matches("tak") ||
+                isMagicBM.getText().matches("0");
+
+
+        BorderlessMap map = new BorderlessMap(mapHeight,mapWidth,jungleRat,startE,plantE, moveE,mapIsMagic);
 
 
         App application = new App();

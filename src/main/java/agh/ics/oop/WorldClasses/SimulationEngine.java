@@ -1,8 +1,5 @@
 package agh.ics.oop.WorldClasses;
 
-
-
-import agh.ics.oop.Enums.MoveDirection;
 import agh.ics.oop.Interfaces.IEngine;
 import agh.ics.oop.Interfaces.IMapObserver;
 
@@ -26,14 +23,7 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
         spawnStartingAnimals(numberOfAnimalsAtStart);
 
     }
-    public SimulationEngine(BorderlessMap borderlessMap, int numberOfAnimalsAtStart,int mapWidth, int mapHeight) {
-        this.map = borderlessMap;
-        map.addObserver(this);
-        this.mapWidth = mapWidth;
-        this.mapHeight = mapHeight;
-        spawnStartingAnimals(numberOfAnimalsAtStart);
-        System.out.println(animals);
-    }
+
 
 
     public void spawnStartingAnimals(int numberOfAnimals) {
@@ -74,6 +64,7 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
         while(animals.size()>0) {
 
             for(Animal animal: animals) {
+
                 animal.moveWithPref();
             }
             map.startDay();
@@ -81,10 +72,9 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
             animals.addAll(map.getSpawnedAnimalsThisDay());
             i++;
             simulateDay();
-            }
-
-        System.out.println("days passed" + i);
         }
+        System.out.println("days passed" + i);
+    }
 
 
 

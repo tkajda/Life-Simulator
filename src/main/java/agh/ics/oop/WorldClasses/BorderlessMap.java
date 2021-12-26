@@ -5,8 +5,8 @@ import agh.ics.oop.Interfaces.IPositionChangeObserver;
 public class BorderlessMap extends Map implements IPositionChangeObserver {
 
 
-    public BorderlessMap(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy, int MoveEnergy) {
-        super(MapHeight, MapWidth, JungleRatio, StartEnergy, PlantEnergy, MoveEnergy);
+    public BorderlessMap(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy, int MoveEnergy,boolean isMagic) {
+        super(MapHeight, MapWidth, JungleRatio, StartEnergy, PlantEnergy, MoveEnergy, isMagic);
     }
 
     public boolean canMoveTo(Vector2d position) {
@@ -65,11 +65,8 @@ public class BorderlessMap extends Map implements IPositionChangeObserver {
                 insertToAnimals(animal, calcNewPos);
 
                 animal.setPosition(calcNewPos);
-
-
         }
         if(posChangedForNAniamls==currentlyLivingAnimals) {
-            System.out.println(animals);
             super.simulateDay();
         }
     }

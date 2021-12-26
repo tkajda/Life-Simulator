@@ -25,10 +25,14 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
     private final Vector2d mapBL =  new Vector2d(0,0);
     private final Vector2d mapTR;
     private final Set<IMapObserver> observers = new HashSet<>();
+    private boolean isMagic = false; //default
+    private int magicHappened = 0;
 
     //grass properties
     protected int plantEnergy;
     private static final int grassSpawnedEachDay = 1;
+    private static final int MAGICNUMBER = 5;
+    private static final int MAGICTIMES = 3;
 
     //animal properties
     private final int moveEnergy; //placeholder
@@ -41,7 +45,7 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
     protected int posChangedForNAniamls = 0;
 
 
-    public Map(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy, int MoveEnergy) {
+    public Map(int MapHeight, int MapWidth, double JungleRatio, int StartEnergy, int PlantEnergy, int MoveEnergy, boolean isMagic) {
         this.mapWidth = MapWidth;
         this.mapHeight= MapHeight;
         this.jungleRatio= JungleRatio;
@@ -50,6 +54,7 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
         this.mapTR = new Vector2d(mapWidth-1, mapHeight-1);
         this.moveEnergy = MoveEnergy;
         setJungle();
+        this.isMagic = isMagic;
     }
 
 
@@ -210,15 +215,40 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
     //MAP SIMULATION----------------------------------------------------------------------------------------------------------------------
     //animals moving in prefered direction
     public void startDay() {
-        sortAnimalsByEnergyInTheMorning();
         this.spawnedAnimalsThisDay.clear();
+        if(this.isMagic && currentlyLivingAnimals==MAGICNUMBER && magicHappened<MAGICTIMES) {
+            System.out.println("magic HAPPENS" + magicHappened);
+            magicHappened++;
+            copyAnimals();
+            for(Animal animal:spawnedAnimalsThisDay) {
+                insertToAnimals(animal, animal.getPosition());
+            }
+        }
+        sortAnimalsByEnergyInTheMorning();
         this.spawnGrassInTheJungle();
         this.spawnGrassOnSteppe();
         this.eatPlants();
         this.removeDeadAnimals();
         this.copulate();
+
     }
 
+    public void copyAnimals() {
+        for(ArrayList<Animal> arrayList: animals.values()) {
+            for(Animal animal: arrayList) {
+
+                Random rng = new Random();
+                Vector2d position = new Vector2d(rng.nextInt(mapWidth-1),rng.nextInt(mapHeight-1));
+                Animal cpAnimal = new Animal(this,position,animal.getStartEnergy());
+                cpAnimal.setGeneIfCopy(animal);
+                cpAnimal.setEnergy(animal.getEnergy(),moveEnergy);
+                cpAnimal.addObserver(this);
+                spawnedAnimalsThisDay.add(cpAnimal);
+                currentlyLivingAnimals++;
+
+            }
+        }
+    }
 
 
     //checking for animals that can eat each day

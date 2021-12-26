@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class App extends Application implements IMapObserver {
 
     private Map field;
-    public int moveDelay= 200;
+    public int moveDelay= 80;
     private int mapWidth;
     private int mapHeight;
     private double jungleRatio;

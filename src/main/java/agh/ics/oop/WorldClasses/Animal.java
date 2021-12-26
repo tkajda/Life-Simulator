@@ -19,7 +19,7 @@ public class Animal  implements IMapElement {
 
     //genes
     private final Gene gene = new Gene();
-    private List<Integer> genes;
+    private List<Integer> genes = new ArrayList<>();
 
     //energy
     public int energy;
@@ -73,7 +73,7 @@ public class Animal  implements IMapElement {
     }
     public int getStartEnergy(){return this.startingEnergy;};
     public List<Integer> getGenes() {
-        return this.genes;
+        return this.gene.getGenes();
     }
     @Override
     public String getName() {
@@ -84,10 +84,6 @@ public class Animal  implements IMapElement {
 
     public Vector2d getPosition() {return position;}
 
-
-    public List<Integer> getAnimalGenes() {
-        return this.genes;
-    }
 
 
 
@@ -136,12 +132,12 @@ public class Animal  implements IMapElement {
         this.energy-=this.moveEnergy;
 
         int gene = rng.nextInt(32);
-        List<Integer> arr = this.gene.getGenes();
-        switch(arr.get(gene)) {
+
+        switch(genes.get(gene)) {
             case 0: this.move(MoveDirection.FORWARD);
             case 4: this.move(MoveDirection.BACKWARD);
             default:
-                for (int i = 0; i<arr.get(gene);i++) {
+                for (int i = 0; i<genes.get(gene);i++) {
                     this.orient = this.orient.next();
                 }
                 positionChanged(this.getPosition(),this.getPosition());
@@ -182,6 +178,13 @@ public class Animal  implements IMapElement {
     public void setRandomGene() {
         this.gene.setRandomGenes();
         this.genes = gene.getGenes();
+    }
+
+    //used only if map is 'magic'
+    public void setGeneIfCopy(Animal parent) {
+        this.gene.setGenesOnSingleParent(parent);
+        this.genes = gene.getGenes();
+
     }
 
     public void setGenesBasedOnParents(Animal parent1, Animal parent2) {

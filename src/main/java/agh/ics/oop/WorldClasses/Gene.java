@@ -27,10 +27,10 @@ public class Gene {
     public void setGenes(Animal parent1, Animal parent2) {
         if (parent1.getEnergy() == parent2.getEnergy()) {
             for(int i =0; i<SIZE/2;i++) {
-                this.genes.add(parent1.getAnimalGenes().get(i));
+                this.genes.add(parent1.getGenes().get(i));
             }
             for(int i =SIZE/2; i<SIZE;i++){
-                this.genes.add(parent2.getAnimalGenes().get(i));
+                this.genes.add(parent2.getGenes().get(i));
             }
         }
         else if(parent1.getEnergy()> parent2.getEnergy()) {
@@ -56,24 +56,26 @@ public class Gene {
 
         if (side == 0) {
             for (int i =0; i<proportion; i++) {
-                this.genes.add(parent1.getAnimalGenes().get(i));
+                this.genes.add(parent1.getGenes().get(i));
             }
             for (int i = proportion; i< SIZE;i++) {
-                this.genes.add(parent2.getAnimalGenes().get(i));
+                this.genes.add(parent2.getGenes().get(i));
             }
         }
 
         else {
             for (int i = 0; i < SIZE - proportion; i++) {
-                this.genes.add(parent2.getAnimalGenes().get(i));
+                this.genes.add(parent2.getGenes().get(i));
             }
             for (int i = SIZE - proportion; i < SIZE; i++) {
-                this.genes.add(parent2.getAnimalGenes().get(i));
+                this.genes.add(parent2.getGenes().get(i));
                 }
             }
     }
 
-
+    public void setGenesOnSingleParent(Animal parent) {
+        this.genes.addAll(parent.getGenes());
+    }
 
     public List<Integer> getGenes() {
         return this.genes;
