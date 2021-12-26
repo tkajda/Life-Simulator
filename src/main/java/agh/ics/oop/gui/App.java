@@ -21,7 +21,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 
-public class App extends Application implements IMapObserver, Runnable {
+public class App extends Application implements IMapObserver {
 
     private Map field;
     public int moveDelay= 200;
@@ -38,7 +38,8 @@ public class App extends Application implements IMapObserver, Runnable {
     private Vector2d mapTR = new Vector2d (mapWidth-1, mapHeight-1);
     private GridPane root;
     private GridPane stats;
-    private static int APPSIZE=800;
+    private static int APPHEIGHT=600;
+    private static int APPWIDTH=1000;
     private static int RGBSIZE=255;
 
     private SimulationEngine engine;
@@ -103,7 +104,7 @@ public class App extends Application implements IMapObserver, Runnable {
         VBox x = new VBox(root, hbButtons);
         x.setSpacing(15);
         x.setAlignment(Pos.CENTER);
-        Scene scene = new Scene(x, APPSIZE, APPSIZE);
+        Scene scene = new Scene(x, APPWIDTH, APPHEIGHT);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -204,8 +205,8 @@ public class App extends Application implements IMapObserver, Runnable {
 
 
     public void addLabel(Label label, int i, int j, int red, int green, int blue){
-        label.setPrefHeight(APPSIZE/mapHeight);
-        label.setPrefWidth(APPSIZE/mapWidth);
+        label.setPrefHeight(APPHEIGHT/2/mapHeight);
+        label.setPrefWidth(APPWIDTH/2/mapWidth);
         label.setBackground(new Background(new BackgroundFill(Color.rgb(red, green, blue, 0.7), CornerRadii.EMPTY, Insets.EMPTY)));
         GridPane.setRowIndex(label,i);
         GridPane.setColumnIndex(label,j);
@@ -234,8 +235,5 @@ public class App extends Application implements IMapObserver, Runnable {
 
     }
 
-    @Override
-    public void run() {
 
-    }
 }

@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
@@ -27,19 +28,21 @@ public class Menu extends Application {
     TextField plantEnergy = new TextField("20");
     TextField moveEnergy = new TextField("1");
     TextField animalsAtStart = new TextField("70");
+    TextField isMagic = new TextField("N");
 
     TextField[] textFieldsMap = {width,height,startEnergy,plantEnergy,jungleRatio
             ,animalsAtStart,moveEnergy};
 
 
     //bordeless map
-    TextField jungleRatioBM = new TextField("0.2");
+    TextField jungleRatioBM = new TextField("0.5");
     TextField widthBM = new TextField("15");
-    TextField heightBM = new TextField("15");
+    TextField heightBM = new TextField("30");
     TextField startEnergyBM = new TextField("100");
-    TextField plantEnergyBM = new TextField("1");
-    TextField moveEnergyBM = new TextField("1");
-    TextField animalsAtStartBM = new TextField("20");
+    TextField plantEnergyBM = new TextField("10");
+    TextField moveEnergyBM = new TextField("3");
+    TextField animalsAtStartBM = new TextField("900");
+    TextField isMagicBM = new TextField("N");
 
     TextField[] textFieldsBMap = {widthBM,heightBM,startEnergyBM,plantEnergyBM,
             jungleRatioBM,animalsAtStartBM,moveEnergyBM};
@@ -106,12 +109,15 @@ public class Menu extends Application {
             @Override
             public void handle(WindowEvent event) {
                 Platform.exit();
+                System.exit(0);
             }
         });
         Scene scene = new Scene(x,600, 600);
         x.setSpacing(100);
         x.setAlignment(Pos.CENTER);
+
         primaryStage.setScene(scene);
+
         primaryStage.show();
     }
 
@@ -142,13 +148,11 @@ public class Menu extends Application {
 
         Map map = new Map(mapHeight,mapWidth,jungleRat,startE,plantE, moveE);
 
-        Platform.runLater(() -> {
+        App application = new App();
+        application.setProperties(map, mapHeight,mapWidth,jungleRat,startE,plantE,moveE, animalsAS);
+        application.init();
+        application.start(new Stage());
 
-                App application = new App();
-                application.setProperties(map, mapHeight,mapWidth,jungleRat,startE,plantE,moveE, animalsAS);
-                application.init();
-                application.start(new Stage());
-        });
     }
 
 
@@ -175,13 +179,11 @@ public class Menu extends Application {
 
         BorderlessMap map = new BorderlessMap(mapHeight,mapWidth,jungleRat,startE,plantE, moveE);
 
-        Platform.runLater(() -> {
 
-            App application = new App();
-            application.setProperties(map,mapHeight,mapWidth,jungleRat,startE,plantE,moveE, animalsAS);
-            application.init();
-            application.start(new Stage());
+        App application = new App();
+        application.setProperties(map,mapHeight,mapWidth,jungleRat,startE,plantE,moveE, animalsAS);
+        application.init();
+        application.start(new Stage());
 
-        });
     }
 }
