@@ -121,6 +121,10 @@ public class Animal  implements IMapElement {
         return "src/main/resources/" + x + ".png";
     }
 
+    public void setPosition(Vector2d position) {
+        this.position = position;
+    }
+
 
 
     //do random move basing on genetype
@@ -154,13 +158,10 @@ public class Animal  implements IMapElement {
         }
         if (map.canMoveTo(newPos) || newPos.equals(this.getPosition())) {
             positionChanged(this.position, newPos);
-            if(map instanceof BorderlessMap) {
-                this.position= ((BorderlessMap) map).calculateNewPosition(this.getPosition(),newPos,this);
-            }
-            else {
+            if(!(map instanceof BorderlessMap)) {
                 this.position = newPos;
-            }
         }
+    }
     }
 
 

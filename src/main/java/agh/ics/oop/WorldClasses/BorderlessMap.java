@@ -14,39 +14,58 @@ public class BorderlessMap extends Map implements IPositionChangeObserver {
     }
 
     public Vector2d calculateNewPosition(Vector2d oldPosition, Vector2d newPosition,Animal animal) {
+        Vector2d newPos = newPosition;
         if (!oldPosition.equals(newPosition)) {
             if (animals.get(oldPosition) != null) {
                 if(super.canMoveTo(newPosition)) {
-                    super.positionChanged(oldPosition,newPosition,animal);
-                    return newPosition;
+                    return newPos;
                 }
-                if (newPosition.x > super.mapWidth - 1 && newPosition.y == oldPosition.y) {
-                    newPosition = new Vector2d(0, newPosition.y);
-                } else if (newPosition.x < 0 && newPosition.y == oldPosition.y) {
-                    newPosition = new Vector2d(mapWidth - 1, newPosition.y);
-                } else if (newPosition.y > mapHeight - 1 && newPosition.x == oldPosition.x) {
-                    newPosition = new Vector2d(newPosition.x, 0);
-                } else if (newPosition.y < 0 && newPosition.x == oldPosition.x) {
-                    newPosition = new Vector2d(newPosition.x, mapHeight - 1);
-                } else if (newPosition.follows(oldPosition)) {
-                    newPosition = new Vector2d(0, 0);
-                } else if (newPosition.precedes(oldPosition)) {
-                    newPosition = new Vector2d(mapWidth - 1, mapHeight - 1);
-                } else if (newPosition.x < oldPosition.x && newPosition.y > oldPosition.y) {
-                    newPosition = new Vector2d(mapWidth - 1, 0);
-                } else if (newPosition.x > oldPosition.x && newPosition.y < oldPosition.y) {
-                    newPosition = new Vector2d(0, mapHeight - 1);
-            }}
+                //corners
+
+                if (newPosition.precedes(new Vector2d(0,0))) {
+                    newPos = new Vector2d(mapWidth-1,mapHeight-1);
+                }
+                else if (newPosition.follows(new Vector2d(mapWidth-1,mapHeight-1))){
+                    newPos = new Vector2d(0,0);
+                }
+                else if (newPosition.x>mapWidth-1 && newPosition.y<0) {
+                    newPos = new Vector2d(0,mapHeight-1);
+                }
+                else if (newPosition.x<0 && newPosition.y>mapHeight-1) {
+                    newPos = new Vector2d(mapWidth-1,0);
+                }
+                //left side
+                else if (newPosition.x<0) {
+                    newPos = new Vector2d(mapWidth-1,newPosition.y);
+                }
+                //right side
+                else if (newPosition.x>mapWidth-1) {
+                    newPos = new Vector2d(0, newPosition.y);
+                }
+                //top side
+                else if (newPosition.y>mapHeight-1) {
+                    newPos = new Vector2d(newPosition.x,0);
+                }
+                //bottom side
+                else {
+                    newPos = new Vector2d(newPosition.x,mapHeight-1);
+                }
+
+            }
         }
-        return newPosition;
+        return newPos;
     }
 
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition, Animal animal){
         posChangedForNAniamls++;
-        if(!newPosition.equals(oldPosition) && !super.canMoveTo(newPosition)){
+        if(!newPosition.equals(oldPosition)){
                 Vector2d calcNewPos = calculateNewPosition(oldPosition,newPosition, animal);
-                super.removeAnimal(oldPosition, animal);
-                super.insertToAnimals(animal, calcNewPos);
+
+                removeAnimal(oldPosition, animal);
+                insertToAnimals(animal, calcNewPos);
+
+                animal.setPosition(calcNewPos);
+
 
         }
         if(posChangedForNAniamls==currentlyLivingAnimals) {

@@ -4,6 +4,7 @@ import agh.ics.oop.WorldClasses.BorderlessMap;
 import agh.ics.oop.WorldClasses.Map;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
@@ -26,7 +28,7 @@ public class Menu extends Application {
     TextField moveEnergy = new TextField("1");
     TextField animalsAtStart = new TextField("70");
 
-    TextField[] names = {width,height,startEnergy,plantEnergy,jungleRatio
+    TextField[] textFieldsMap = {width,height,startEnergy,plantEnergy,jungleRatio
             ,animalsAtStart,moveEnergy};
 
 
@@ -39,7 +41,7 @@ public class Menu extends Application {
     TextField moveEnergyBM = new TextField("1");
     TextField animalsAtStartBM = new TextField("20");
 
-    TextField[] namesBM = {widthBM,heightBM,startEnergyBM,plantEnergyBM,
+    TextField[] textFieldsBMap = {widthBM,heightBM,startEnergyBM,plantEnergyBM,
             jungleRatioBM,animalsAtStartBM,moveEnergyBM};
 
     public VBox generateVbox(TextField[] names){
@@ -70,17 +72,10 @@ public class Menu extends Application {
         return vBox;
     }
 
-
-    @Override
-    public void start(Stage primaryStage) {
-        Label label1 = new Label("Mapa");
-        Label label2 = new Label("Mapa2");
-        Button start1 = new Button("Start");
-        Button start2 = new Button("Start");
+    private void setButtonFunctions(Button start1, Button start2) {
         start2.setOnAction( event -> {
             runBorderlessMap();
         });
-
         try {
             start1.setOnAction( event -> {
                 onEvent();
@@ -89,12 +84,30 @@ public class Menu extends Application {
         catch(IllegalArgumentException exception){
             System.exit(0);
         }
+    }
 
 
-        VBox vbox1 = new VBox(generateVbox(names),label1,start1);
-        VBox vbox2 = new VBox(generateVbox(namesBM),label2,start2);
+    @Override
+    public void start(Stage primaryStage) {
+        //'normal' map
+        Label label1 = new Label("Mapa");
+        Button start1 = new Button("Start");
+        VBox vbox1 = new VBox(label1,generateVbox(textFieldsMap),start1);
+
+        //map where borders dont exist
+        Label label2 = new Label("Mapa2");
+        Button start2 = new Button("Start");
+        VBox vbox2 = new VBox(label2,generateVbox(textFieldsBMap),start2);
+
+        setButtonFunctions(start1,start2);
+
         HBox x = new HBox(vbox1,vbox2);
-
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                Platform.exit();
+            }
+        });
         Scene scene = new Scene(x,600, 600);
         x.setSpacing(100);
         x.setAlignment(Pos.CENTER);
@@ -102,15 +115,18 @@ public class Menu extends Application {
         primaryStage.show();
     }
 
-    public void onEvent() {
-        if(jungleRatio.getText().matches("[a-zA-Z]+") ||
-                width.getText().matches("[a-zA-Z]+") ||
-                height.getText().matches("[a-zA-Z]+") ||
-                startEnergy.getText().matches("[a-zA-Z]+") ||
-                plantEnergy.getText().matches("[a-zA-Z]+")) {
+    public boolean checkData(TextField[] names) {
+        System.out.println(names[0].getText());
+        return (names[0].getText().matches("[a-zA-Z]+") || names[1].getText().matches("[a-zA-Z]+")
+                || names[2].getText().matches("[a-zA-Z]+") || names[3].getText().matches("[a-zA-Z]+") ||
+                names[4].getText().matches("[a-zA-Z]+"));
+    }
 
-            throw new IllegalArgumentException("wrong data");
-        }
+
+    public void onEvent() {
+        if (checkData(textFieldsMap)) {
+            throw new IllegalArgumentException("Invalid values");
+        };
 
         double jungleRat = parseDouble(jungleRatio.getText());
 
@@ -132,22 +148,18 @@ public class Menu extends Application {
                 application.setProperties(map, mapHeight,mapWidth,jungleRat,startE,plantE,moveE, animalsAS);
                 application.init();
                 application.start(new Stage());
-
         });
     }
 
 
+
     public void runBorderlessMap() {
-        if(jungleRatioBM.getText().matches("[a-zA-Z]+") ||
-                widthBM.getText().matches("[a-zA-Z]+") ||
-                heightBM.getText().matches("[a-zA-Z]+") ||
-                startEnergyBM.getText().matches("[a-zA-Z]+") ||
-                plantEnergyBM.getText().matches("[a-zA-Z]+")) {
 
-            throw new IllegalArgumentException("wrong data");
-        }
+        if (checkData(textFieldsBMap)) {
+            throw new IllegalArgumentException("Invalid values");
+        };
 
-        double jungleRat = parseDouble(jungleRatio.getText());
+        double jungleRat = parseDouble(jungleRatioBM.getText());
 
         if(jungleRat>=1 || jungleRat<=0) {
             throw new IllegalArgumentException();
@@ -172,10 +184,4 @@ public class Menu extends Application {
 
         });
     }
-
-
-
-
-
-
 }

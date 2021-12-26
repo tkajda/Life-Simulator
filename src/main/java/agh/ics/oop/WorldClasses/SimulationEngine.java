@@ -80,7 +80,6 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
             this.removeDead();
             animals.addAll(map.getSpawnedAnimalsThisDay());
             i++;
-            System.out.println(map.getNumOfCurLivingAnimals());
             simulateDay();
             }
 

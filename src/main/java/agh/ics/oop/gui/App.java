@@ -5,6 +5,7 @@ import agh.ics.oop.Interfaces.IMapElement;
 import agh.ics.oop.Interfaces.IMapObserver;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -22,8 +24,7 @@ import java.util.ArrayList;
 public class App extends Application implements IMapObserver, Runnable {
 
     private Map field;
-    private BorderlessMap borderlessMap;
-    public int moveDelay= 500;
+    public int moveDelay= 200;
     private int mapWidth;
     private int mapHeight;
     private double jungleRatio;
@@ -37,7 +38,7 @@ public class App extends Application implements IMapObserver, Runnable {
     private Vector2d mapTR = new Vector2d (mapWidth-1, mapHeight-1);
     private GridPane root;
     private GridPane stats;
-    private static int APPSIZE=600;
+    private static int APPSIZE=800;
     private static int RGBSIZE=255;
 
     private SimulationEngine engine;
@@ -93,7 +94,12 @@ public class App extends Application implements IMapObserver, Runnable {
         stop.setOnAction( event -> {
             onEventStop();
         });
-
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                stop();
+            }
+        });
         VBox x = new VBox(root, hbButtons);
         x.setSpacing(15);
         x.setAlignment(Pos.CENTER);
@@ -111,9 +117,9 @@ public class App extends Application implements IMapObserver, Runnable {
         engineThread.start();
     }
 
-
+    @Override
     public void stop() {
-        System.exit(0);
+        engineThread.stop();
     }
 
 
@@ -152,14 +158,19 @@ public class App extends Application implements IMapObserver, Runnable {
                         int blue = Math.min(RGBSIZE, Math.max(0,objectAsAnimal.getEnergy()));
                         int green = Math.max(0,Math.min(RGBSIZE,RGBSIZE-objectAsAnimal.getEnergy()));
 
-                        addObject(object, j+1, height-i+1,red, green,blue);
+                        addObject(object, j+1, height-i+1,red, green,blue, 1);
                     }
                 }
                 else if(positionAtMap.precedes(jungleTR) && positionAtMap.follows(jungleBL)) {
                     addLabel(new Label(),height-i+1, j+1, 0,126,0);
                 }
-                if (field.isOccupiedByGrass(new Vector2d(j,i))) {
-                    addObject(field.grassAt(new Vector2d(j,i)), j+1, height-i+1, RGBSIZE,RGBSIZE, 0);
+                if (field.isOccupiedByGrass(positionAtMap)) {
+                    if (positionAtMap.precedes(jungleTR) && positionAtMap.follows(jungleBL)) {
+                        addObject(field.grassAt(new Vector2d(j,i)), j+1, height-i+1, RGBSIZE,RGBSIZE, 0, 0.6);
+                    }
+                    else {
+                        addObject(field.grassAt(new Vector2d(j,i)), j+1, height-i+1, RGBSIZE,RGBSIZE, 0,1);
+                    }
                 }
             }
         }
@@ -173,13 +184,13 @@ public class App extends Application implements IMapObserver, Runnable {
 
     //to include pictures uncomment commented lines in this method and comment 173 line
     // althogh, it is not recommended, because causes problems with threads
-    public void addObject(Object o, int col, int row,int red, int green, int blue) {
+    public void addObject(Object o, int col, int row,int red, int green, int blue, double opacity) {
 //        try {
 //            IMapElement y = (IMapElement) o;
 //            GuiElementBox guiElementBox = new GuiElementBox(y);
 //            VBox x = guiElementBox.getVBox();
             VBox x = new VBox();
-            x.setBackground(new Background(new BackgroundFill(Color.rgb(red, green, blue, 1), CornerRadii.EMPTY, Insets.EMPTY)));
+            x.setBackground(new Background(new BackgroundFill(Color.rgb(red, green, blue, opacity), CornerRadii.EMPTY, Insets.EMPTY)));
             GridPane.setRowIndex(x,row);
             GridPane.setColumnIndex(x,col);
 
