@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class App extends Application implements IMapObserver, Runnable {
 
     private Map field;
-    public int moveDelay= 100;
+    public int moveDelay= 200;
     private int mapWidth;
     private int mapHeight;
     private double jungleRatio;
@@ -72,10 +72,9 @@ public class App extends Application implements IMapObserver, Runnable {
         setGrid();
         root.setGridLinesVisible(true);
         HBox hbButtons = new HBox();
-        hbButtons.setSpacing(10.0);
         Button move = new Button("Start");
         Button stop = new Button("Stop");
-        VBox buttons = new VBox(move,stop);
+        hbButtons.setSpacing(10.0);
         hbButtons.setAlignment(Pos.BOTTOM_CENTER);
         hbButtons.getChildren().addAll(move,stop);
 
@@ -149,10 +148,10 @@ public class App extends Application implements IMapObserver, Runnable {
                     }
                 }
                 else if(positionAtMap.precedes(jungleTR) && positionAtMap.follows(jungleBL)) {
-                    addLabel(new Label(),height-i+1, j+1, 0,RGBSIZE,0);
+                    addLabel(new Label(),height-i+1, j+1, 0,126,0);
                 }
                 if (field.isOccupiedByGrass(new Vector2d(j,i))) {
-                    addObject(field.grassAt(new Vector2d(j,i)), j+1, height-i+1, RGBSIZE,0, 0);
+                    addObject(field.grassAt(new Vector2d(j,i)), j+1, height-i+1, RGBSIZE,RGBSIZE, 0);
                 }
             }
         }
@@ -164,7 +163,8 @@ public class App extends Application implements IMapObserver, Runnable {
 
 
 
-
+    //to include pictures uncomment commented lines in this method and comment 173 line
+    // althogh, it is not recommended, because causes problems with threads
     public void addObject(Object o, int col, int row,int red, int green, int blue) {
 //        try {
 //            IMapElement y = (IMapElement) o;
