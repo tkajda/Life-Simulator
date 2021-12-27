@@ -13,6 +13,8 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
     private final Set<IMapObserver> observers = new HashSet<>();
     private final int mapWidth;
     private final int mapHeight;
+    public int avgLifeLen = 0;
+    public int deadAnimals = 0;
 
     //constructor
     public SimulationEngine(Map map, int numberOfAnimalsAtStart, int mapWidth, int mapHeight) {
@@ -81,10 +83,40 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
         return animals.size();
     }
 
+    public int getAvarageEnergy() {
 
+        int sum=0;
+        for(Animal animal: animals) {
+            sum+= animal.getEnergy();
+        }
+        if(animals.size()==0) {
+            return 0;
+        }
+        return sum/animals.size();
+    }
 
-    public void removeDead() {
+    public void removeDead(){
+        for (Animal animal:animals) {
+            if(animal.getEnergy()<=0) {
+                avgLifeLen+=animal.lengthOfLife;
+                deadAnimals++;
+            }
+        }
         animals.removeIf(animal -> animal.getEnergy() <= 0);
     }
+
+    public double getAvgLifeLen() {
+        if (deadAnimals!=0) {
+            return avgLifeLen/deadAnimals;
+        }
+        return 0;
+    }
+
+    public int getNumOfGrass(){
+        return map.getNumOfGrass();
+    }
+
+
+
 
 }

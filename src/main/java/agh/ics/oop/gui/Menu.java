@@ -96,12 +96,12 @@ public class Menu extends Application {
     @Override
     public void start(Stage primaryStage) {
         //'normal' map
-        Label label1 = new Label("Mapa");
+        Label label1 = new Label("Mapa normalna");
         Button start1 = new Button("Start");
         VBox vbox1 = new VBox(label1,generateVbox(textFieldsMap),start1);
 
         //map where borders dont exist
-        Label label2 = new Label("Mapa2");
+        Label label2 = new Label("Mapa zawinieta");
         Button start2 = new Button("Start");
         VBox vbox2 = new VBox(label2,generateVbox(textFieldsBMap),start2);
 

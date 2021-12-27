@@ -35,8 +35,8 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
     private static final int MAGICTIMES = 3;
 
     //animal properties
-    private final int moveEnergy; //placeholder
-    private final int startEnergy; //placeholder
+    private final int moveEnergy;
+    private final int startEnergy;
     private Vector2d jungleBL;
     private Vector2d jungleTR;
     protected int currentlyLivingAnimals = 0;
@@ -55,6 +55,10 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
         this.moveEnergy = MoveEnergy;
         setJungle();
         this.isMagic = isMagic;
+    }
+
+    public int getNumOfGrass() {
+        return grassFields.size();
     }
 
 
@@ -278,7 +282,7 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
         ArrayList<Animal> res = new ArrayList<>();
         for(int i = arr.size()-1; i >= 0; i--) {
             Animal parent = arr.get(i);
-            if (parent.getEnergy()>=0.5* parent.getStartEnergy()) {
+            if (parent.getEnergy()>=0.5*startEnergy) {
                 res.add(parent);
             }
             if(res.size() == 2) {

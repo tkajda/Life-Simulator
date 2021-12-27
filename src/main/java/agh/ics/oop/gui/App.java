@@ -9,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -28,6 +29,8 @@ import java.util.ArrayList;
 
 public class App extends Application implements IMapObserver {
 
+
+    //map properties
     private Map field;
     public int moveDelay= 300;
     private int mapWidth;
@@ -41,36 +44,42 @@ public class App extends Application implements IMapObserver {
     private Vector2d jungleTR;
     private Vector2d mapBL =  new Vector2d(0,0);
     private Vector2d mapTR = new Vector2d (mapWidth-1, mapHeight-1);
-    private GridPane root;
-    private GridPane stats;
+    private int DAY = 0;
+
+
+    //application constants
     private static int APPHEIGHT=600;
     private static int APPWIDTH=1000;
     private static int RGBSIZE=255;
 
+    //engine
     private SimulationEngine engine;
     private Thread engineThread;
+
+    private GridPane root;
+
+    //plot
     NumberAxis xAxis = new NumberAxis();
     NumberAxis yAxis = new NumberAxis();
-    private LineChart<Number,Number> lineChart =
+    final LineChart<Number,Number> lineChart =
             new LineChart<Number,Number>(xAxis,yAxis);
-    XYChart.Series series = new XYChart.Series();
-    private int DAY = 0;
+
+    XYChart.Series numOfAnimals = new XYChart.Series();
+    XYChart.Series numOfGrass = new XYChart.Series();
+    XYChart.Series avgEnergy = new XYChart.Series();
+    XYChart.Series avgLifeLen = new XYChart.Series();
 
 
     public void setProperties(Map map, int MapHeight, int MapWidth, double JungleRatio, int StartEnergy,
                               int PlantEnergy,int moveEnergy, int animalsAtStart) {
 
         this.field = map;
-
         this.mapWidth = MapWidth;
         this.mapHeight= MapHeight;
-
         this.jungleRatio= JungleRatio;
         this.startEnergy= StartEnergy;
-
         this.plantEnergy= PlantEnergy;
         this.moveEnergy = moveEnergy;
-
         this.animalsAtStart = animalsAtStart;
     }
 
@@ -81,13 +90,13 @@ public class App extends Application implements IMapObserver {
         jungleBL = field.getJungleBL();
         jungleTR = field.getJungleTR();
 
-
         engine = new SimulationEngine(this.field, this.animalsAtStart,this.mapWidth,this.mapHeight);
         engine.addObserver(this);
         engineThread = new Thread(engine);
         engineThread.start();
 
-        lineChart.getData().add(series);
+        lineChart.getData().addAll(numOfAnimals, numOfGrass, avgLifeLen, avgEnergy);
+        lineChart.setCreateSymbols(false);
 
     }
 
@@ -115,11 +124,11 @@ public class App extends Application implements IMapObserver {
                 stop();
             }
         });
+        Group group = new Group(lineChart);
         VBox x = new VBox(root, hbButtons);
         xAxis.setLabel("Days");
-        x.setSpacing(15);
         x.setAlignment(Pos.CENTER);
-        HBox hBox = new HBox(x, lineChart);
+        HBox hBox = new HBox(x, group);
 
 
         Scene scene = new Scene(hBox, APPWIDTH, APPHEIGHT);
@@ -214,8 +223,8 @@ public class App extends Application implements IMapObserver {
 
         if(o instanceof Animal) {
             Button btn = new Button();
-            btn.setPrefHeight(APPHEIGHT/2/mapHeight+5);
-            btn.setMinHeight(APPHEIGHT/2/mapHeight+5);
+            btn.setPrefHeight(APPHEIGHT/2/mapHeight+3);
+            btn.setMinHeight(APPHEIGHT/2/mapHeight+3);
             btn.setPrefWidth(APPWIDTH/2/mapWidth);
             btn.setMinWidth(APPWIDTH/2/mapWidth);
             btn.setMaxSize(APPWIDTH/2/mapWidth, APPHEIGHT/2/mapHeight);
@@ -223,6 +232,7 @@ public class App extends Application implements IMapObserver {
             btn.setOnAction(event -> {
                 Alert a = new Alert(Alert.AlertType.INFORMATION);
                 a.setContentText(((Animal) o).getGenes().toString());
+                a.setHeaderText("animal gene");
                 a.show();
             });
             btn.setBackground(new Background(new BackgroundFill(Color.rgb(red, green, blue, opacity), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -252,7 +262,14 @@ public class App extends Application implements IMapObserver {
     }
 
     public void updateChart() {
-        series.getData().add(new XYChart.Data(DAY, engine.getNumOfLivingAnimals()));
+
+        numOfAnimals.getData().add(new XYChart.Data(DAY, engine.getNumOfLivingAnimals()));
+        if(engine.getAvgLifeLen()>0) {
+            avgLifeLen.getData().add(new XYChart.Data(DAY, engine.getAvgLifeLen()));
+
+        }
+        avgEnergy.getData().add(new XYChart.Data(DAY, engine.getAvarageEnergy()));
+        numOfGrass.getData().add(new XYChart.Data(DAY, engine.getNumOfGrass()));
     }
 
 
@@ -263,12 +280,15 @@ public class App extends Application implements IMapObserver {
     public void simulateDay() {
 
         Platform.runLater(() -> {
+            //map
             root.setGridLinesVisible(false);
             root.getChildren().clear();
             setGrid();
+            root.setGridLinesVisible(true);
+
+            //plot
             DAY++;
             updateChart();
-            root.setGridLinesVisible(true);
         });
         try {
             Thread.sleep(moveDelay);
