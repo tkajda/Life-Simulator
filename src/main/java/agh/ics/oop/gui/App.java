@@ -10,10 +10,15 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -24,7 +29,7 @@ import java.util.ArrayList;
 public class App extends Application implements IMapObserver {
 
     private Map field;
-    public int moveDelay= 80;
+    public int moveDelay= 300;
     private int mapWidth;
     private int mapHeight;
     private double jungleRatio;
@@ -44,7 +49,12 @@ public class App extends Application implements IMapObserver {
 
     private SimulationEngine engine;
     private Thread engineThread;
-
+    NumberAxis xAxis = new NumberAxis();
+    NumberAxis yAxis = new NumberAxis();
+    private LineChart<Number,Number> lineChart =
+            new LineChart<Number,Number>(xAxis,yAxis);
+    XYChart.Series series = new XYChart.Series();
+    private int DAY = 0;
 
 
     public void setProperties(Map map, int MapHeight, int MapWidth, double JungleRatio, int StartEnergy,
@@ -67,14 +77,18 @@ public class App extends Application implements IMapObserver {
 
     public void init() {
 
-        this.root = new GridPane();
-        this.jungleBL = field.getJungleBL();
-        this.jungleTR = field.getJungleTR();
+        root = new GridPane();
+        jungleBL = field.getJungleBL();
+        jungleTR = field.getJungleTR();
 
-        this.engine = new SimulationEngine(this.field, this.animalsAtStart,this.mapWidth,this.mapHeight);
+
+        engine = new SimulationEngine(this.field, this.animalsAtStart,this.mapWidth,this.mapHeight);
         engine.addObserver(this);
-        this.engineThread = new Thread(engine);
+        engineThread = new Thread(engine);
         engineThread.start();
+
+        lineChart.getData().add(series);
+
     }
 
     @Override
@@ -102,9 +116,13 @@ public class App extends Application implements IMapObserver {
             }
         });
         VBox x = new VBox(root, hbButtons);
+        xAxis.setLabel("Days");
         x.setSpacing(15);
         x.setAlignment(Pos.CENTER);
-        Scene scene = new Scene(x, APPWIDTH, APPHEIGHT);
+        HBox hBox = new HBox(x, lineChart);
+
+
+        Scene scene = new Scene(hBox, APPWIDTH, APPHEIGHT);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -145,8 +163,8 @@ public class App extends Application implements IMapObserver {
             addLabel(label,0,j, RGBSIZE,RGBSIZE, RGBSIZE);
         }
 
-        for (int i = 0; i < height+1;i++) {
-            for (int j=0; j<width+1;j++) {
+        for (int i = 1; i < height+2;i++) {
+            for (int j=1; j<width+1;j++) {
                 Vector2d positionAtMap = new Vector2d(j,i);
 
                 if (field.isOccupied(positionAtMap)){
@@ -190,13 +208,31 @@ public class App extends Application implements IMapObserver {
 //            IMapElement y = (IMapElement) o;
 //            GuiElementBox guiElementBox = new GuiElementBox(y);
 //            VBox x = guiElementBox.getVBox();
-            VBox x = new VBox();
-            x.setBackground(new Background(new BackgroundFill(Color.rgb(red, green, blue, opacity), CornerRadii.EMPTY, Insets.EMPTY)));
-            GridPane.setRowIndex(x,row);
-            GridPane.setColumnIndex(x,col);
+        Pane x=new Pane();
+        x.setPrefHeight(APPHEIGHT/2/mapHeight);
+        x.setPrefWidth(APPWIDTH/2/mapWidth);
 
-            x.setAlignment(Pos.CENTER);
-            root.getChildren().add(x);
+        if(o instanceof Animal) {
+            Button btn = new Button();
+            btn.setPrefHeight(APPHEIGHT/2/mapHeight+5);
+            btn.setMinHeight(APPHEIGHT/2/mapHeight+5);
+            btn.setPrefWidth(APPWIDTH/2/mapWidth);
+            btn.setMinWidth(APPWIDTH/2/mapWidth);
+            btn.setMaxSize(APPWIDTH/2/mapWidth, APPHEIGHT/2/mapHeight);
+            x.getChildren().add(btn);
+            btn.setOnAction(event -> {
+                Alert a = new Alert(Alert.AlertType.INFORMATION);
+                a.setContentText(((Animal) o).getGenes().toString());
+                a.show();
+            });
+            btn.setBackground(new Background(new BackgroundFill(Color.rgb(red, green, blue, opacity), CornerRadii.EMPTY, Insets.EMPTY)));
+        }
+
+        x.setBackground(new Background(new BackgroundFill(Color.rgb(red, green, blue, opacity), CornerRadii.EMPTY, Insets.EMPTY)));
+        GridPane.setRowIndex(x,row);
+        GridPane.setColumnIndex(x,col);
+
+        root.getChildren().add(x);
 //        }
 //        catch (FileNotFoundException ex) {
 //            System.exit(0);
@@ -215,6 +251,12 @@ public class App extends Application implements IMapObserver {
 
     }
 
+    public void updateChart() {
+        series.getData().add(new XYChart.Data(DAY, engine.getNumOfLivingAnimals()));
+    }
+
+
+
 
     //app being informed about passing day
     @Override
@@ -224,6 +266,8 @@ public class App extends Application implements IMapObserver {
             root.setGridLinesVisible(false);
             root.getChildren().clear();
             setGrid();
+            DAY++;
+            updateChart();
             root.setGridLinesVisible(true);
         });
         try {

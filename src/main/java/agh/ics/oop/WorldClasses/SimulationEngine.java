@@ -77,6 +77,11 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
     }
 
 
+    public int getNumOfLivingAnimals() {
+        return animals.size();
+    }
+
+
 
     public void removeDead() {
         animals.removeIf(animal -> animal.getEnergy() <= 0);
