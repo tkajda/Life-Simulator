@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 
@@ -210,8 +211,8 @@ public class App extends Application implements IMapObserver {
 
 
 
-    //to include pictures uncomment commented lines in this method and comment 173 line
-    // althogh, it is not recommended, because causes problems with threads
+    //to include pictures uncomment commented lines in this method
+    // althogh, it is not recommended
     public void addObject(Object o, int col, int row,int red, int green, int blue, double opacity) {
 //        try {
 //            IMapElement y = (IMapElement) o;
