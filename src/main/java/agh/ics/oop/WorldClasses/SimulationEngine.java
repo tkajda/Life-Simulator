@@ -3,6 +3,7 @@ package agh.ics.oop.WorldClasses;
 import agh.ics.oop.Interfaces.IEngine;
 import agh.ics.oop.Interfaces.IMapObserver;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 
@@ -117,6 +118,14 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
     }
 
 
-
-
+    public int getDominantGene() {
+        int list[] = {0,0,0,0,
+                0,0,0,0};
+        for(Animal animal: animals) {
+            for(Integer gene: animal.getGenes()) {
+                list[gene]++;
+            }
+        }
+        return Arrays.stream(list).max().getAsInt();
+    }
 }
