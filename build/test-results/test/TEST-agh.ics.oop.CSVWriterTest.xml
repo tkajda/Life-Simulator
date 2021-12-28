@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="agh.ics.oop.CSVWriterTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-12-28T17:07:54" hostname="DESKTOP-Q8RF19I" time="0.016">
+  <properties/>
+  <testcase name="convertToCSVTest()" classname="agh.ics.oop.CSVWriterTest" time="0.016"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
