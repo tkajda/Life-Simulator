@@ -1,0 +1,3 @@
+Brakująca funkcja:
+wskazać pojedyncze zwierzę, w celu śledzenia jego historii (śledzenie rozpoczyna się w danym momencie,
+ więc nie uwzględnia wcześniejszych dzieci, ani potomków; wartości mają być aktualizowane na bieżąco):
