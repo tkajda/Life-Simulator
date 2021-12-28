@@ -12,7 +12,6 @@ public class World {
             Application.launch(Menu.class, args);
         }
         catch (IllegalArgumentException ex) {
-            System.out.println(ex);
             System.exit(0);
 
         }

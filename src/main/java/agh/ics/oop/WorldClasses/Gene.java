@@ -45,6 +45,9 @@ public class Gene {
 
     //choose a side for dominant parent and set genes lamenting both parents' genes
     public void setGenesBasedOnParents(Animal parent1, Animal parent2) {
+        parent1.increaseNumOfChildren();
+        parent2.increaseNumOfChildren();
+
         Random rndGenerator = new Random();
         int side = rndGenerator.nextInt(2);
 

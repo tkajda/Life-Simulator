@@ -6,7 +6,6 @@ import agh.ics.oop.Interfaces.IPositionChangeObserver;
 import agh.ics.oop.Interfaces.IMapObserver;
 import agh.ics.oop.Interfaces.IWorldMap;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
@@ -25,8 +24,9 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
     private final Vector2d mapBL =  new Vector2d(0,0);
     private final Vector2d mapTR;
     private final Set<IMapObserver> observers = new HashSet<>();
-    private boolean isMagic = false; //default
+    private boolean isMagic;
     private int magicHappened = 0;
+    private Jungle jungle;
 
     //grass properties
     protected int plantEnergy;
@@ -37,8 +37,8 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
     //animal properties
     private final int moveEnergy;
     private final int startEnergy;
-    private Vector2d jungleBL;
-    private Vector2d jungleTR;
+    private final Vector2d jungleBL;
+    private final Vector2d jungleTR;
     protected int currentlyLivingAnimals = 0;
 
     //properties and methods for map observers
@@ -53,7 +53,9 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
         this.plantEnergy= PlantEnergy;
         this.mapTR = new Vector2d(mapWidth-1, mapHeight-1);
         this.moveEnergy = MoveEnergy;
-        setJungle();
+        this.jungle = new Jungle(mapHeight,mapWidth,jungleRatio);
+        this.jungleBL = jungle.getJungleBL();
+        this.jungleTR = jungle.getJungleTR();
         this.isMagic = isMagic;
     }
 
@@ -61,16 +63,21 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
         return grassFields.size();
     }
 
-
+    //only for test purposes
+    public int getNumOfAnimals() {return currentlyLivingAnimals;};
 
     public void addObserver(IMapObserver observer) {
         observers.add(observer);
     }
 
 
-    public int getNumOfCurLivingAnimals() {
-        return currentlyLivingAnimals;
+    public Vector2d getJungleBL() {
+        return jungleBL;
     }
+    public Vector2d getJungleTR() {
+        return jungleTR;
+    }
+
 
     public String toString() {
         MapVisualizer visualizer = new MapVisualizer(this);
@@ -176,52 +183,14 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
 
     //set jungle position and fill it with plants
 
-    public int[] findRectangle(int width, int height, int surface) {
-        int indexI=0, indexJ=0;
-        double best = Integer.MAX_VALUE;
-        for (int i = 1; i< width; i++) {
-            for(int j =1;j<height;j++) {
-                if (Math.abs((double)i*j/surface-jungleRatio)<=best) {
-                    best = Math.abs((double)i*j/surface-jungleRatio);
-                    indexI=i;
-                    indexJ=j;
-                }
-            }
-        }
 
-
-        return new int[]{indexI, indexJ};
-    }
-
-
-    public void setJungle() {
-        int surface = mapHeight*mapWidth;
-
-
-        int[] whArr = findRectangle(mapWidth,mapHeight,surface);
-        int jungleWidth = whArr[0];
-        int jungleHeight = whArr[1];
-
-        int midHeight = mapHeight/2;
-        int midWidth = mapWidth/2;
-
-
-        this.jungleBL = new Vector2d(midWidth-Math.floorDiv(jungleWidth-1, 2), midHeight-Math.floorDiv(jungleHeight-1, 2));
-        this.jungleTR = new Vector2d(midWidth+Math.floorDiv(jungleWidth, 2), midHeight+Math.floorDiv(jungleHeight, 2));
-    }
-    public Vector2d getJungleBL() {
-        return jungleBL;
-    }
-    public Vector2d getJungleTR() {
-        return jungleTR;
-    }
 
     //MAP SIMULATION----------------------------------------------------------------------------------------------------------------------
     //animals moving in prefered direction
     public void startDay() {
         this.spawnedAnimalsThisDay.clear();
         if(this.isMagic && currentlyLivingAnimals==MAGICNUMBER && magicHappened<MAGICTIMES) {
-            System.out.println("magic HAPPENS" + magicHappened);
+
             magicHappened++;
             copyAnimals();
             for(Animal animal:spawnedAnimalsThisDay) {
@@ -261,7 +230,7 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
 
             if (isOccupiedByGrass(arrayList.get(0).getPosition())) {
                 int i = arrayList.size()-1;
-                int highestEnergy = arrayList.get(i).getEnergy();
+                int highestEnergy = arrayList.get(0).getEnergy();
                 int cnt = 0;
 
                 while(i>=0 && arrayList.get(i).getEnergy()==highestEnergy) {
@@ -276,11 +245,12 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
             }
         }
     }
-    //copulation is supposed to go here
-    //checking for animals that can copulate
+
+
+    //scan for animals which can copulate
     public ArrayList<Animal> findPossibleParents(ArrayList<Animal> arr) {
         ArrayList<Animal> res = new ArrayList<>();
-        for(int i = arr.size()-1; i >= 0; i--) {
+        for(int i = 0; i <= arr.size()-1; i++) {
             Animal parent = arr.get(i);
             if (parent.getEnergy()>=0.5*startEnergy) {
                 res.add(parent);
@@ -310,7 +280,7 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
 
         int parent1EnergyAfter = (int) Math.ceil(parent1.getEnergy()/4);
         int parent2EnergyAfter = (int) Math.ceil(parent2.getEnergy()/4);
-        int childEnergy = (int) (parent2EnergyAfter + parent1EnergyAfter);
+        int childEnergy = (parent2EnergyAfter + parent1EnergyAfter);
 
         parent1.setEnergy(parent1.getEnergy()-parent1EnergyAfter, moveEnergy);
         parent2.setEnergy(parent2.getEnergy()-parent2EnergyAfter, moveEnergy);
@@ -362,7 +332,7 @@ public class Map implements IWorldMap, IPositionChangeObserver, IMapObserver {
     //spawning new grass on map each day
     public void spawnGrassOnSteppe() {
         int i = 0;
-        int tooManyTimes = (int) Math.pow(grassSpawnedEachDay,2);
+        int tooManyTimes = 2*(int) Math.pow(grassSpawnedEachDay,2);
         int cnt =0;
 
 

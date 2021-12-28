@@ -3,7 +3,6 @@ package agh.ics.oop.WorldClasses;
 import agh.ics.oop.Interfaces.IEngine;
 import agh.ics.oop.Interfaces.IMapObserver;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 
@@ -16,6 +15,8 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
     private final int mapHeight;
     public int avgLifeLen = 0;
     public int deadAnimals = 0;
+    private int allEverLivingAnimals=0;
+    private int DAY = 0;
 
     //constructor
     public SimulationEngine(Map map, int numberOfAnimalsAtStart, int mapWidth, int mapHeight) {
@@ -61,8 +62,7 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
     @Override
     public void run() {
 
-        int i = 0;
-        System.out.println("silmulation has started!");
+        allEverLivingAnimals = animals.size();
 
         while(animals.size()>0) {
 
@@ -72,13 +72,19 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
             }
             map.startDay();
             this.removeDead();
+
             animals.addAll(map.getSpawnedAnimalsThisDay());
-            i++;
+            allEverLivingAnimals += map.getSpawnedAnimalsThisDay().size();
+
+            DAY++;
             simulateDay();
         }
-        System.out.println("days passed" + i);
     }
 
+
+    public int getDay() {
+        return DAY;
+    }
 
     public int getNumOfLivingAnimals() {
         return animals.size();
@@ -119,13 +125,56 @@ public class SimulationEngine implements  Runnable, IEngine, IMapObserver {
 
 
     public int getDominantGene() {
-        int list[] = {0,0,0,0,
+
+        int[] list = {0,0,0,0,
                 0,0,0,0};
+        int maxAt = 0;
+
         for(Animal animal: animals) {
             for(Integer gene: animal.getGenes()) {
                 list[gene]++;
             }
         }
-        return Arrays.stream(list).max().getAsInt();
+
+        for (int i = 0; i < list.length; i++) {
+            maxAt = list[i] > list[maxAt] ? i : maxAt;
+        }
+        return maxAt;
     }
+
+
+    public List<Integer> findDominantGenotype() {
+        int best = 0;
+        int i = 0;
+        int animalIndex = 0;
+        for(Animal animal:animals) {
+            i++;
+            int cnt = 0;
+            for(Animal animals1: animals) {
+                if (animal.getGenes().equals(animals1.getGenes())) {
+                    cnt++;
+                }
+            }
+            if(cnt>best){
+                best = cnt;
+                animalIndex= i;
+            }
+        }
+        return animals.get(animalIndex).getGenes();
+    }
+
+
+
+    public double getAverageNumOfChildren(){
+        int sum=0;
+        for(Animal animal: animals) {
+            sum+=animal.getNumOfChildren();
+        }
+        if (animals.size() != 0) {
+            return sum/allEverLivingAnimals;
+        }
+        return 0;
+    }
+
+
 }

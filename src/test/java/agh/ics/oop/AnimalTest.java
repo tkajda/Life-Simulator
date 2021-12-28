@@ -5,171 +5,65 @@ import static org.junit.jupiter.api.Assertions.*;
 import agh.ics.oop.Enums.MapDirection;
 import agh.ics.oop.Enums.MoveDirection;
 import agh.ics.oop.WorldClasses.Animal;
+import agh.ics.oop.WorldClasses.Map;
 import agh.ics.oop.WorldClasses.Vector2d;
 import org.junit.jupiter.api.Test;
 
 
 public class AnimalTest {
-    RectangularMap map1 = new RectangularMap(5,5);
-    Animal abc = new Animal(map1,new Vector2d(2,2));
+
+    Animal createAnimal() {
+        Map map1 = new Map(5,5,0.2,1000,1,1,false);
+        Animal a = new Animal(map1,new Vector2d(2,2),1000);
+        a.setEnergy(1000,1);
+        a.setRandomGene();
+        return a;
+    }
+    Animal a = createAnimal();
 
     @Test
     void orientationTest() {
 
-//        System.out.println(map1.getTopRight().x);
-//        System.out.println(map1.getTopRight().y);
 
-        MoveDirection[][] moves = {
-                {MoveDirection.RIGHT,MoveDirection.RIGHT,MoveDirection.RIGHT,MoveDirection.RIGHT}, //test1
-                {MoveDirection.FORWARD,MoveDirection.RIGHT,MoveDirection.RIGHT,MoveDirection.RIGHT,MoveDirection.LEFT,MoveDirection.BACKWARD,MoveDirection.BACKWARD}, //test2
-                {MoveDirection.LEFT,MoveDirection.LEFT,MoveDirection.RIGHT,MoveDirection.RIGHT,MoveDirection.LEFT}, //test3
-                {MoveDirection.LEFT,MoveDirection.LEFT,MoveDirection.LEFT,MoveDirection.LEFT,MoveDirection.LEFT,MoveDirection.LEFT} //test4
-        };
-
-        MapDirection[] result = {MapDirection.NORTH, MapDirection.SOUTH, MapDirection.EAST,MapDirection.WEST};
-        int i = 0;
-
-        for(MoveDirection[] p1: moves) {
-            for(MoveDirection a: p1) {
-                abc.move(a);
-            }
-            assertEquals(abc.getDirection(), result[i]);
-            i++;
-
-        }
+        MapDirection startingDir = a.getDirection();
+        a.move(MoveDirection.FORWARD);
+        assertSame(a.getDirection(), startingDir);
+        a.move(MoveDirection.BACKWARD);
+        assertSame(a.getDirection(),startingDir);
     }
 
 
-    @Test
-    void isAtMapTest() {
 
-
-        MoveDirection[] moves = {MoveDirection.FORWARD,MoveDirection.FORWARD,
-                MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.FORWARD};
-        for(int i=0; i<10; i++) {
-            for(MoveDirection dir: moves) {
-                abc.move(dir);
-            }
-            abc.move(MoveDirection.LEFT);
-
-        }
-    }
 
 
     @Test
     void positionTest() {
 
+        MapDirection startingDir = a.getDirection();
+        a.move(MoveDirection.FORWARD);
+        Vector2d v = new Vector2d(2,2);
+        assertEquals(a.getPosition(),v.add(startingDir.toUnitVector()) );
 
-        Vector2d[] vectors = {new Vector2d(3,1),
-                                new Vector2d(3,4),
-                                new Vector2d(-1,2),
-                                new Vector2d(0,3)};
+        a.move(MoveDirection.FORWARD);
+        assertEquals(a.getPosition(),v.add(startingDir.toUnitVector()).add(startingDir.toUnitVector()) );
 
-        MoveDirection[][] moves = {
-                {MoveDirection.BACKWARD,MoveDirection.LEFT,MoveDirection.BACKWARD,MoveDirection.RIGHT}, //test1
-                {MoveDirection.FORWARD,MoveDirection.RIGHT,MoveDirection.RIGHT,MoveDirection.RIGHT,MoveDirection.LEFT,MoveDirection.BACKWARD,MoveDirection.BACKWARD}, //test2
-                {MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.RIGHT,MoveDirection.RIGHT,MoveDirection.LEFT,MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.FORWARD}, //test3
-                {MoveDirection.RIGHT,MoveDirection.RIGHT,MoveDirection.FORWARD,MoveDirection.FORWARD,MoveDirection.BACKWARD,MoveDirection.LEFT,MoveDirection.FORWARD} //test4
-        };
-        int i = 0;
+        a.setPosition(new Vector2d(0,0));
+        assertEquals(new Vector2d(0,0), a.getPosition());
 
-        for(MoveDirection[] p: moves) {
-            for(MoveDirection dir: p) {
-                abc.move(dir);
-            }
-            assertTrue(abc.isAt(vectors[i]));
-        i++;
-
-        }
     }
-
 
     @Test
-    void testMove() {
-        Animal a = new Animal(new RectangularMap(5,5),new Vector2d(2,2));
+    void energyTest() {
 
-        assertEquals(new Vector2d(2, 2), a.getPosition());
-        assertEquals(MapDirection.NORTH, a.getDirection());
+        assertEquals(a.getEnergy(), 1000);
+        a.moveWithPref();
+        assertEquals(a.getEnergy(), 999);
 
-        MoveDirection[] moves = {MoveDirection.FORWARD,MoveDirection.RIGHT, MoveDirection.FORWARD, MoveDirection.RIGHT,
-                        MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.FORWARD,MoveDirection.RIGHT, MoveDirection.FORWARD,
-                        MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.RIGHT, MoveDirection.FORWARD,
-                        MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.LEFT,
-                        MoveDirection.FORWARD, MoveDirection.BACKWARD, MoveDirection.BACKWARD, MoveDirection.BACKWARD, MoveDirection.BACKWARD};
-
-        Vector2d[] positions = {new Vector2d(2, 3), new Vector2d(2, 3), new Vector2d(3, 3),
-                new Vector2d(3, 3), new Vector2d(3, 2), new Vector2d(3, 1),
-                new Vector2d(3, 0), new Vector2d(3, 0), new Vector2d(2, 0),
-                new Vector2d(1, 0), new Vector2d(0, 0), new Vector2d(-1, 0),
-                new Vector2d(-1, 0), new Vector2d(-1, 1), new Vector2d(0, 1)};
-
-        MapDirection[]  directions = { MapDirection.NORTH ,MapDirection.EAST ,MapDirection.EAST ,
-                MapDirection.SOUTH ,MapDirection.SOUTH ,MapDirection.SOUTH ,MapDirection.SOUTH ,
-                MapDirection.WEST ,MapDirection.WEST ,MapDirection.WEST ,MapDirection.WEST ,
-                MapDirection.WEST ,MapDirection.NORTH ,MapDirection.NORTH ,MapDirection.WEST ,
-                MapDirection.WEST , MapDirection.WEST ,MapDirection.WEST ,MapDirection.SOUTH ,
-                MapDirection.SOUTH , MapDirection.SOUTH , MapDirection.SOUTH ,MapDirection.SOUTH ,
-        };
-
-        int i = 0;
-        a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-        i++;
-              a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-        i++;
-        a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-        i++;
-        a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-        i++;
-        a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-        i++;
-        a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-        i++;
-        a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-        i++;
-        a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-        i++;
-
-        a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-        i++;
-        a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-        i++;
-        a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-        i++;
-        a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-        i++;
-        a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-        i++;
-        a.move(moves[i]);
-        assertEquals(positions[i], a.getPosition());
-        assertEquals(directions[i], a.getDirection());
-
+        a.eatGrass(10);
+        assertEquals(a.getEnergy(), 1009);
     }
+
+
 }
 
 

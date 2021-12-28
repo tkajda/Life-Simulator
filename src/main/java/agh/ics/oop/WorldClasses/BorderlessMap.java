@@ -13,7 +13,7 @@ public class BorderlessMap extends Map implements IPositionChangeObserver {
         return true;
     }
 
-    public Vector2d calculateNewPosition(Vector2d oldPosition, Vector2d newPosition,Animal animal) {
+    public Vector2d calculateNewPosition(Vector2d oldPosition, Vector2d newPosition) {
         Vector2d newPos = newPosition;
         if (!oldPosition.equals(newPosition)) {
             if (animals.get(oldPosition) != null) {
@@ -59,7 +59,7 @@ public class BorderlessMap extends Map implements IPositionChangeObserver {
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition, Animal animal){
         posChangedForNAniamls++;
         if(!newPosition.equals(oldPosition)){
-                Vector2d calcNewPos = calculateNewPosition(oldPosition,newPosition, animal);
+                Vector2d calcNewPos = calculateNewPosition(oldPosition,newPosition);
 
                 removeAnimal(oldPosition, animal);
                 insertToAnimals(animal, calcNewPos);

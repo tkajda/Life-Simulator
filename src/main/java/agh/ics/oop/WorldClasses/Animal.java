@@ -14,6 +14,9 @@ public class Animal  implements IMapElement {
     private Vector2d position;
     public int lengthOfLife = 0;
 
+    private int numOfChildren=0;
+    private ArrayList<Animal> children = new ArrayList<>();
+
     //observers
     private final Set<IPositionChangeObserver> observers = new HashSet<>();
 
@@ -71,7 +74,7 @@ public class Animal  implements IMapElement {
     public int getEnergy() {
         return this.energy;
     }
-    public int getStartEnergy(){return this.startingEnergy;};
+    public int getStartEnergy(){return this.startingEnergy;}
     public List<Integer> getGenes() {
         return this.gene.getGenes();
     }
@@ -83,8 +86,18 @@ public class Animal  implements IMapElement {
     public MapDirection getDirection() {return orient;}
 
     public Vector2d getPosition() {return position;}
+    public ArrayList<Animal> getChildren() {
+        return children;
+    }
 
+    public void addChildren(Animal animal) {
+        children.add(animal);
+    }
 
+    //only for tests
+    public void setOrient(MapDirection orient) {
+        this.orient = orient;
+    }
 
 
     public String toString() {
@@ -117,10 +130,18 @@ public class Animal  implements IMapElement {
         return "src/main/resources/" + x + ".png";
     }
 
+
     public void setPosition(Vector2d position) {
         this.position = position;
     }
 
+    public void increaseNumOfChildren() {
+        numOfChildren++;
+    }
+
+    public int getNumOfChildren(){
+        return numOfChildren;
+    }
 
 
     //do random move basing on genetype
@@ -188,6 +209,8 @@ public class Animal  implements IMapElement {
     }
 
     public void setGenesBasedOnParents(Animal parent1, Animal parent2) {
+        parent1.addChildren(this);
+        parent2.addChildren(this);
         this.gene.setGenes(parent1, parent2);
         this.genes = gene.getGenes();
     }
