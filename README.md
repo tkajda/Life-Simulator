@@ -14,8 +14,15 @@ Author: Tomasz Kajda.
 #### 6. Animals can copulate if they stand on same the same point and each of them has energy above 50% of starting energy.
 #### 7. ildren inherits genes of its parents.
 #### 8. Simulation ends when there are no living animals.
+<br/>
+<br/>
+<br/>
 
+#### Aside default setting, user can choose own parameters. <br/> Here is the menu of the application
 ![Alt text](menu.png?raw=true "Menu")
 
+
+#### Running application with default parameters simualtion
+![2022-04-23 16-21-41](https://user-images.githubusercontent.com/92893264/164912730-1624d04f-2c1b-410d-8f30-830f84f767ad.gif)
 
         
