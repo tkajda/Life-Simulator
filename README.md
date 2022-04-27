@@ -12,7 +12,7 @@ Author: Tomasz Kajda.
 #### 4. Each animal has move preferation based on its genes. 
 #### 5. Starting genes are random.
 #### 6. Animals can copulate if they stand on same the same point and each of them has energy above 50% of starting energy.
-#### 7. ildren inherits genes of its parents.
+#### 7. Children inherits genes of its parents.
 #### 8. Simulation ends when there are no living animals.
 <br/>
 <br/>
